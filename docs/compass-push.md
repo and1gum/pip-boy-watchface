@@ -13,7 +13,9 @@ PowerManager interactive state, Display.STATE_ON, and unlocked keyguard.
 Display and screen events recheck these gates. On inactivity the service removes
 the sensor listener and all timer callbacks, clears readings, and requests NoData.
 The idle service remains for wake events. START_STICKY requests process recovery;
-Android can delay restart. Force-stop requires reopening the application.
+Android can delay restart. A boot/package-update receiver restarts the service
+when the compass is enabled and a slot remains assigned. Force-stop requires
+reopening the application.
 
 The public API does not expose exact watchface visibility. Tracking may continue
 inside another app while the screen stays interactive and unlocked. Removing the
