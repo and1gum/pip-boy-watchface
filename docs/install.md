@@ -49,9 +49,9 @@ adb -s WATCH_IP:CONNECT_PORT shell am broadcast \
 
 The broadcast is a debug shortcut; use the face picker for normal selection.
 
-## 4. Assign data sources
+## 4. Check data sources
 
-Open **Customize / Edit** for Pip-Boy and choose these sources where available:
+No separate configuration file is needed: the default sources are built into `watchface.xml` inside the APK. When the companion and Phone Battery Complication are installed before selecting the face, Wear OS should bind them automatically. Open **Customize / Edit** only if a field is empty or was changed previously. The preset sources are:
 
 | Face area | Source | Value type |
 | --- | --- | --- |
@@ -76,8 +76,8 @@ Compass, pressure and location are read on the watch. The companion saves the la
 ## Troubleshooting
 
 - **ADB cannot connect:** check that the watch and computer can reach each other, then read the *current* connect port from Wireless debugging. Pairing and connect ports are different.
-- **Compass is blank:** bind the Pip-Boy Compass source, open its app once, press **Enable compass** if needed, and wake/unlock the display. An invalid or stale sensor reading is intentionally hidden.
+- **Compass is blank:** confirm that the companion is installed. If the source was not selected automatically, choose Pip-Boy Compass in the editor. Open its app once, press **Enable compass** if needed, and wake/unlock the display. An invalid or stale sensor reading is intentionally hidden.
 - **No solar time:** turn on watch location, check approximate and background permissions for the companion, then tap a solar time or reopen its location screen.
-- **No phone battery:** install and bind a compatible RANGED_VALUE complication provider.
+- **No phone battery:** install Phone Battery Complication on the phone and watch. If the slot stays empty, choose its RANGED_VALUE source in the editor.
 - **Weather is blank after switching faces:** return to Pip-Boy and allow the watch's weather provider time to refresh. Check its own setup and permissions.
 - **An update fails with a signature error:** debug builds from different machines have different signing keys. Uninstalling the old package and reinstalling removes its local settings; save anything you need first.

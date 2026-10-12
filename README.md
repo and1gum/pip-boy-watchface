@@ -16,11 +16,11 @@ A green instrument-panel watch face for Wear OS, built with Watch Face Format 3.
 - A computer with Android Debug Bridge (ADB) and wireless access to the watch for sideloading.
 - Two APKs built from this repository: the watch face and its companion. The face itself needs no phone application.
 
-The companion supplies compass, pressure, sunrise and sunset complications. Other values come from the watch or complication providers already installed on your devices. For phone battery, install [Phone Battery Complication](https://play.google.com/store/apps/details?id=com.weartools.phonebattcomp&hl=en) on the phone and watch, then select its **RANGED_VALUE** source. This third-party provider is not included in the face.
+The companion supplies compass, pressure, sunrise and sunset complications. Other values come from the watch or complication providers already installed on your devices. For phone battery, install [Phone Battery Complication](https://play.google.com/store/apps/details?id=com.weartools.phonebattcomp&hl=en) on the phone and watch. This third-party provider is not included in the face; when installed, its **RANGED_VALUE** source is the face's default.
 
 ## Install and set up
 
-Follow the [step-by-step installation guide](docs/install.md). Build both APKs with `bash scripts/build.sh`, pair ADB with the watch, install the companion first, then the face, and choose **Pip-Boy** in the watch-face picker. In the face editor, assign the calendar, phone battery, compass, barometer, sunrise and sunset sources. Open **Pip-Boy Compass** once to enable its sensor service. For solar times, grant approximate and background location to the companion and open its environment screen to fetch the watch's location.
+Follow the [step-by-step installation guide](docs/install.md). Build both APKs with `bash scripts/build.sh`, pair ADB with the watch, install the companion first, then the face, and choose **Pip-Boy** in the watch-face picker. The calendar, phone battery, compass, pressure, sunrise and sunset sources are preset in the face; available providers do not need manual selection. Open **Pip-Boy Compass** once to enable its sensor service. For solar times, grant approximate and background location to the companion and open its environment screen to fetch the watch's location.
 
 The source has no prebuilt release APK or store listing. APKs made by `scripts/build.sh` are debug builds signed on your machine. Do not assume that an APK from another builder can update one you built locally.
 
