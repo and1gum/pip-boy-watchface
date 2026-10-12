@@ -1,6 +1,6 @@
 # Install Pip-Boy on a watch
 
-This guide installs the current **0.2.0 debug build** from source. It was tested on Galaxy Watch SM-L715F with Wear OS 7. Menus may differ on another watch. You need a computer, the watch, and a network path between them; the computer can use Ethernet.
+This guide installs the current **0.2.0 debug build** from source. It was tested on Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) with Wear OS 7. Menus may differ on another watch. You need a computer, the watch, and a network path between them; the computer can use Ethernet.
 
 ## 1. Build the two APKs
 

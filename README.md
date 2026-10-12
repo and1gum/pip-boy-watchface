@@ -2,11 +2,11 @@
 
 A green instrument-panel watch face for Wear OS, built with Watch Face Format 3. Large digital time sits inside a compass rim, with an analog hand, weather, steps, heart rate, watch and phone battery, pressure, sunrise and sunset. A calendar event follows the upper arc.
 
-**Status:** experimental source project, version 0.2.0. Tested on a Galaxy Watch SM-L715F running Wear OS 7 (Android 17), 498 × 498 display. It has not been packaged for the Play Store. The compass animation and battery impact still need longer real-world testing.
+**Status:** experimental source project, version 0.2.0. Tested on a Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) running Wear OS 7 (Android 17), 498 × 498 display. It has not been packaged for the Play Store. The compass animation and battery impact still need longer real-world testing.
 
-![Illustrative active preview with sample data](docs/images/active-preview.png) ![Ambient mode captured on the watch](docs/images/ambient-on-watch.png)
+![Active mode captured on the watch](docs/images/active-on-watch.png) ![Ambient mode captured on the watch](docs/images/ambient-on-watch.png)
 
-*Left: generated preview with sample values, not a watch screenshot. Right: screenshot of ambient mode on the test watch.*
+*Both images are unedited screenshots of the test watch: active mode on the left, ambient mode on the right.*
 
 [Українською](README.uk.md) · [Install on a watch](docs/install.md) · [Source and limitations](docs/data-sources.md)
 
