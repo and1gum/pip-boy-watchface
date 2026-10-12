@@ -61,6 +61,8 @@ No separate configuration file is needed: the default sources are built into `wa
 | Pressure | Pip-Boy Barometer | RANGED_VALUE |
 | Sunrise and sunset | Pip-Boy Sunrise and Sunset | SHORT_TEXT |
 
+On the tested watch, Samsung Barometer provides only `SHORT_TEXT` and `LONG_TEXT`. The numeric column needs `RANGED_VALUE`, so our provider reads the same watch pressure sensor and adds a trend based on a short local history.
+
 The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. The linked phone-battery provider is **not included**: install its phone and watch apps first. If you do not use it, leave that slot empty.
 
 Open **Pip-Boy Compass** in the watch's app list once after assigning the compass. Its **Stop compass / Enable compass** button controls tracking. The sensor pauses when the display sleeps, enters ambient mode, or locks. Its reading is magnetic heading, so it can differ from true north.
