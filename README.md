@@ -28,6 +28,18 @@ The source has no prebuilt release APK or store listing. APKs made by `scripts/b
 
 The compass uses the watch's rotation sensor and may disappear when the display sleeps, locks, or the sensor reading becomes stale. Ambient mode keeps time, weather, pressure and solar times while hiding the active compass and other busy elements. Weather and calendar availability depend on the watch's system providers and their permissions. Sunrise and sunset use an approximate watch location; pressure uses the watch's pressure sensor. Missing data appears as missing data rather than a made-up reading.
 
+The heart icon changes color with the heart-rate range. These default thresholds and colors are set in the code:
+
+| Heart rate, bpm | Color |
+| --- | --- |
+| 1–98 | Blue |
+| 99–109 | Green |
+| 110–131 | Yellow |
+| 132–164 | Orange |
+| 165 and above | Red |
+
+You can manually change the four boundaries between ranges in the watch-face editor; they must stay in ascending order. The colors remain fixed. This is the face's own indicator, not your personal Samsung Health zones. When heart rate is unavailable, the number becomes a dash and the heart keeps its default green color without indicating a zone.
+
 The project makes no network request of its own. Location and pressure history stay on the watch in the companion's local storage; the face itself receives data through Wear OS complications. Android permissions used by the companion are explained in the [installation guide](docs/install.md#permissions-and-privacy).
 
 ## For developers
