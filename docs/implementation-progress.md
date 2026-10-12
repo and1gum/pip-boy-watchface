@@ -1,7 +1,7 @@
 # Implementation ledger
 
-Plan: user-approved Pip-Boy plan, 2026-10-11. Design authority:
-`../pip-boy-watchface-handoff/DESIGN.md`, plus in-chat HR boundaries and colored weather.
+Historical implementation notes from 2026-10-11. Current behavior and limitations
+are documented in [data sources](data-sources.md).
 
 ## Baseline and decisions
 

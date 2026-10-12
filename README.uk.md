@@ -8,7 +8,7 @@
 
 *Обидва зображення — незмінені скриншоти з тестового годинника: активний режим ліворуч, AOD праворуч. [Новий порядок стрілок на годиннику](docs/images/hand-order-on-watch.png) знято після виправлення; погода в цьому кадрі тимчасово не завантажилася після оновлення APK.*
 
-[English](README.md) · [Установлення на годинник](docs/install.uk.md) · [Джерела даних та обмеження](docs/data-sources.md)
+[English](README.md) · [Установлення на годинник](docs/install.uk.md) · [Джерела даних та обмеження (англійською)](docs/data-sources.md)
 
 ## Що потрібно
 
@@ -51,4 +51,4 @@ python3 -m pip install Pillow
 bash scripts/build.sh
 ```
 
-Після збірки APK будуть у `artifacts/PipBoy-0.2.0-debug.apk` та `artifacts/PipBoy-Compass-0.2.0-debug.apk`; контрольні суми — в `artifacts/SHA256SUMS`. Початковий дизайн — у `pip-boy-watchface-handoff/`, ліцензії сторонніх шрифтів — у `licenses/`.
+Після збірки APK будуть у `artifacts/PipBoy-0.2.0-debug.apk` та `artifacts/PipBoy-Compass-0.2.0-debug.apk`; контрольні суми — в `artifacts/SHA256SUMS`. Ліцензії сторонніх шрифтів — у `licenses/`.
