@@ -10,8 +10,11 @@ it is not corrected to true north.
 A specialUse foreground service keeps the sensor client eligible while the face
 is active. Tracking requires an enabled provider, at least one bound instance,
 PowerManager interactive state, Display.STATE_ON, and unlocked keyguard.
-Display and screen events recheck these gates. On inactivity the service removes
-the sensor listener and all timer callbacks, clears readings, and requests NoData.
+Display and screen events recheck these gates. A ten-second eligibility check
+covers watches that do not emit an unlock or screen-on event when leaving ambient
+mode. It does not read sensors or hold a wake lock while paused. On inactivity
+the service removes the sensor listener and heading timer callbacks, clears
+readings, and requests NoData.
 The idle service remains for wake events. START_STICKY requests process recovery;
 Android can delay restart. A boot/package-update receiver restarts the service
 when the compass is enabled and a slot remains assigned. Force-stop requires

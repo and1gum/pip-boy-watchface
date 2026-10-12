@@ -30,6 +30,9 @@ public final class CompassTrackingService extends Service implements DisplayMana
     private final HeadingMotion motion = new HeadingMotion();
     private long publishedAt;
     private boolean hadFreshData;
+    // Some watches keep the display ON through ambient mode and omit an unlock broadcast.
+    // Recheck eligibility without reading sensors or holding a wake lock while paused.
+    private final Runnable retryWhenEligible = this::refresh;
     private final Runnable tick = new Runnable() {
         @Override public void run() {
             refresh();
@@ -104,6 +107,9 @@ public final class CompassTrackingService extends Service implements DisplayMana
             pause();
         }
         if (!CompassState.enabled(this) || !CompassState.hasSlots(this)) stopSelf();
+        handler.removeCallbacks(retryWhenEligible);
+        if (!CompassState.reading && CompassState.enabled(this) && CompassState.hasSlots(this))
+            handler.postDelayed(retryWhenEligible, 10_000);
     }
     private void publishReading() {
         long now = SystemClock.elapsedRealtime();
