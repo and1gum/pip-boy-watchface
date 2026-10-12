@@ -638,8 +638,8 @@ def generate():
         provider='ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.PressureSource',default_type='RANGED_VALUE')
     for kind in ('RANGED_VALUE','EMPTY'):
         payload=node(pressure,'Complication',type=kind)
-        line(payload,254,356,254,380,'#1B3821',8)
-        for y in (354,362,370,379):
+        line(payload,254,332,254,385,'#1B3821',8)
+        for y in (332,345,358,371,384):
             line(payload,263,y,267,y,DIVIDER,1)
         text(payload,'mm',279,362,42,26,SECONDARY_SIZE).find('Text').set('align','START')
         if kind=='EMPTY':
@@ -654,20 +654,11 @@ def generate():
         _,states=condition(trend,[('rising','[COMPLICATION.TITLE] == "up"'),
             ('falling','[COMPLICATION.TITLE] == "down"'),('stable','[COMPLICATION.TITLE] == "steady"')])
         default=node(trend.find('Condition'),'Default')
-        for owner,color,symbol in [(states['rising'],AMBER,'↗'),(states['falling'],'#65B8FF','↘'),
-                                   (states['stable'],GREEN,'→'),(default,'#53665B',None)]:
-            shape=node(draw(owner),'Line',startX=254,startY=380,endX=254,endY=380)
-            node(shape,'Transform',target='endY',value='380 - 24*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)')
+        for owner,color in [(states['rising'],AMBER),(states['falling'],'#65B8FF'),
+                            (states['stable'],GREEN),(default,'#53665B')]:
+            shape=node(draw(owner),'Line',startX=254,startY=385,endX=254,endY=385)
+            node(shape,'Transform',target='endY',value='385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)')
             node(shape,'Stroke',color=color,thickness=8,cap='ROUND')
-            if symbol:
-                indicator=node(owner,'PartDraw',x=244,y=331,width=20,height=19,name='pressure_direction')
-                segments={
-                    '↗':[(4,14,15,3),(7,3,15,3),(15,3,15,11)],
-                    '↘':[(4,3,15,14),(7,14,15,14),(15,14,15,6)],
-                    '→':[(3,9,17,9),(11,3,17,9),(17,9,11,15)]}[symbol]
-                for x1,y1,x2,y2 in segments:
-                    shape=node(indicator,'Line',startX=x1,startY=y1,endX=x2,endY=y2)
-                    node(shape,'Stroke',color=color,thickness=2,cap='ROUND')
     # Both solar times are calculated for the local calendar day by the companion.
     for slot_id,label,x,start,end,field in (
         ('5','sunrise',18,-80.5,-54.5,'TEXT'),

@@ -12,6 +12,23 @@ class HealthPanelTest(unittest.TestCase):
   for kind in ('RANGED_VALUE','EMPTY'):
    self.assertIsNotNone(slot.find(f"Complication[@type='{kind}']"))
   self.assertIsNotNone(face.find(".//Group[@name='pressure_trend']"))
+
+ def test_pressure_uses_long_color_column_without_direction_arrow(self):
+  face=ET.parse(ROOT/'watchface/src/main/res/raw/watchface.xml').getroot()
+  slot=face.find(".//ComplicationSlot[@slotId='4']")
+  self.assertEqual(slot.findall(".//PartDraw[@name='pressure_direction']"),[])
+  ranged=slot.find("Complication[@type='RANGED_VALUE']")
+  for state in ('rising','falling','stable'):
+   branch=ranged.find(f".//Group[@name='pressure_trend']/Condition/Compare[@expression='{state}']")
+   self.assertIsNotNone(branch)
+   fill=branch.find(".//Line[@startX='254'][@endX='254']")
+   self.assertIsNotNone(fill)
+   self.assertEqual(fill.get('startY'),'385')
+   self.assertEqual(fill.get('endY'),'385')
+   self.assertEqual(fill.find('Transform').get('value'),
+                    '385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)')
+  track=ranged.find(".//Line[@startX='254'][@endX='254'][@startY='332'][@endY='385']")
+  self.assertIsNotNone(track)
  def test_large_pulse_and_icons_leave_sectors_and_weather_clear(self):
   face=ET.parse(ROOT/'watchface/src/main/res/raw/watchface.xml').getroot()
   for part in face.findall(".//PartText[@name='pulse_tap']"):
