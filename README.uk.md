@@ -51,4 +51,4 @@ python3 -m pip install Pillow
 bash scripts/build.sh
 ```
 
-Результати: `artifacts/PipBoy-0.2.0-debug.apk`, `artifacts/PipBoy-Compass-0.2.0-debug.apk`, `artifacts/SHA256SUMS`. У Git потрапляють код і документація; `artifacts/` залишається локально. Початковий дизайн — у `pip-boy-watchface-handoff/`, ліцензії сторонніх шрифтів — у `licenses/`.
+Після збірки APK будуть у `artifacts/PipBoy-0.2.0-debug.apk` та `artifacts/PipBoy-Compass-0.2.0-debug.apk`; контрольні суми — в `artifacts/SHA256SUMS`. Початковий дизайн — у `pip-boy-watchface-handoff/`, ліцензії сторонніх шрифтів — у `licenses/`.

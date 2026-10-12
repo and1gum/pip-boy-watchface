@@ -51,4 +51,4 @@ python3 -m pip install Pillow
 bash scripts/build.sh
 ```
 
-Output: `artifacts/PipBoy-0.2.0-debug.apk`, `artifacts/PipBoy-Compass-0.2.0-debug.apk`, and `artifacts/SHA256SUMS`. The repository tracks source and documentation; `artifacts/` stays local. The original design handoff is in `pip-boy-watchface-handoff/`. Third-party font notices are in `licenses/`.
+After the build, find the APKs at `artifacts/PipBoy-0.2.0-debug.apk` and `artifacts/PipBoy-Compass-0.2.0-debug.apk`; checksums are in `artifacts/SHA256SUMS`. The original design handoff is in `pip-boy-watchface-handoff/`. Third-party font notices are in `licenses/`.
