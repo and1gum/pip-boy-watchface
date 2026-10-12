@@ -14,9 +14,9 @@ A green instrument-panel watch face for Wear OS, built with Watch Face Format 3.
 
 - A compatible Wear OS watch with Android 15 or newer (SDK 35+). The tested device is listed above; other models are unverified.
 - A computer with Android Debug Bridge (ADB) and wireless access to the watch for sideloading.
-- Two APKs built from this repository: the watch face and its companion. No phone application is required.
+- Two APKs built from this repository: the watch face and its companion. The face itself needs no phone application.
 
-The companion supplies compass, pressure, sunrise and sunset complications. Other values come from the watch or complication providers already installed on your devices. Phone battery needs a compatible **RANGED_VALUE** phone-battery provider; the face does not include one.
+The companion supplies compass, pressure, sunrise and sunset complications. Other values come from the watch or complication providers already installed on your devices. For phone battery, install [Phone Battery Complication](https://play.google.com/store/apps/details?id=com.weartools.phonebattcomp&hl=en) on the phone and watch, then select its **RANGED_VALUE** source. This third-party provider is not included in the face.
 
 ## Install and set up
 

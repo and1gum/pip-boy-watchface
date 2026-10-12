@@ -56,12 +56,12 @@ Open **Customize / Edit** for Pip-Boy and choose these sources where available:
 | Face area | Source | Value type |
 | --- | --- | --- |
 | Upper calendar arc | System next calendar event | LONG_TEXT |
-| Phone battery | Installed phone-battery provider | RANGED_VALUE |
+| Phone battery | [Phone Battery Complication](https://play.google.com/store/apps/details?id=com.weartools.phonebattcomp&hl=en) | RANGED_VALUE |
 | Compass rim | Pip-Boy Compass | RANGED_VALUE |
 | Pressure | Pip-Boy Barometer | RANGED_VALUE |
 | Sunrise and sunset | Pip-Boy Sunrise and Sunset | SHORT_TEXT |
 
-The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. A phone-battery provider is **not included**. If you do not have a compatible one, leave that slot empty.
+The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. The linked phone-battery provider is **not included**: install its phone and watch apps first. If you do not use it, leave that slot empty.
 
 Open **Pip-Boy Compass** in the watch's app list once after assigning the compass. Its **Stop compass / Enable compass** button controls tracking. The sensor pauses when the display sleeps, enters ambient mode, or locks. Its reading is magnetic heading, so it can differ from true north.
 
