@@ -1,0 +1,83 @@
+# Install Pip-Boy on a watch
+
+This guide installs the current **0.2.0 debug build** from source. It was tested on Galaxy Watch SM-L715F with Wear OS 7. Menus may differ on another watch. You need a computer, the watch, and a network path between them; the computer can use Ethernet.
+
+## 1. Build the two APKs
+
+Install JDK 17 or newer, Android SDK platform 36 and build-tools 35.0.0, Python 3 with Pillow, and Node.js. Set `JAVA_HOME` and `ANDROID_HOME` to your installations, then run from the repository root:
+
+```bash
+python3 -m pip install Pillow
+bash scripts/build.sh
+```
+
+The script tests and builds both modules. It writes `artifacts/PipBoy-Compass-0.2.0-debug.apk` and `artifacts/PipBoy-0.2.0-debug.apk`. It also writes `SHA256SUMS` so you can check the files with `cd artifacts && sha256sum -c SHA256SUMS`.
+
+## 2. Pair wireless ADB
+
+On the watch, enable **Developer options** and **Wireless debugging**. Open **Pair device with pairing code** and note its IP address, **pairing port**, and code. On the computer:
+
+```bash
+adb pair WATCH_IP:PAIR_PORT
+```
+
+Enter the code shown on the watch. Return to the main Wireless debugging screen and note its **connect port**. This is usually a different port and can change later:
+
+```bash
+adb connect WATCH_IP:CONNECT_PORT
+adb devices
+```
+
+`adb devices` should list the watch. Substitute the actual address and ports; do not type the placeholder words. If your computer uses Windows ADB from WSL, run `adb.exe` and pass APK paths converted with `wslpath -w`.
+
+## 3. Install and select the face
+
+Install the companion first, then the face:
+
+```bash
+adb -s WATCH_IP:CONNECT_PORT install -r artifacts/PipBoy-Compass-0.2.0-debug.apk
+adb -s WATCH_IP:CONNECT_PORT install -r artifacts/PipBoy-0.2.0-debug.apk
+```
+
+Both commands must print `Success`. Choose **Pip-Boy** from the watch's face picker. If it does not appear immediately, reopen the picker. For the tested watch, the optional ADB selection command is:
+
+```bash
+adb -s WATCH_IP:CONNECT_PORT shell am broadcast \
+  -a com.google.android.wearable.app.DEBUG_SURFACE \
+  --es operation set-watchface --es watchFaceId ua.and1gum.pipboy
+```
+
+The broadcast is a debug shortcut; use the face picker for normal selection.
+
+## 4. Assign data sources
+
+Open **Customize / Edit** for Pip-Boy and choose these sources where available:
+
+| Face area | Source | Value type |
+| --- | --- | --- |
+| Upper calendar arc | System next calendar event | LONG_TEXT |
+| Phone battery | Installed phone-battery provider | RANGED_VALUE |
+| Compass rim | Pip-Boy Compass | RANGED_VALUE |
+| Pressure | Pip-Boy Barometer | RANGED_VALUE |
+| Sunrise and sunset | Pip-Boy Sunrise and Sunset | SHORT_TEXT |
+
+The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. A phone-battery provider is **not included**. If you do not have a compatible one, leave that slot empty.
+
+Open **Pip-Boy Compass** in the watch's app list once after assigning the compass. Its **Stop compass / Enable compass** button controls tracking. The sensor pauses when the display sleeps, enters ambient mode, or locks. Its reading is magnetic heading, so it can differ from true north.
+
+To show sunrise and sunset, allow location services on the watch, grant the companion approximate location and **Allow all the time** background location in the watch's app permissions, then tap a solar time on the face. This opens a small screen that fetches the watch's location; use **Update location** if needed. Without a current location the last saved position may be used, or the values may be unavailable.
+
+## Permissions and privacy
+
+The watch-face APK has no Android runtime permissions. The companion requests foreground-service permissions to keep its compass provider available while the interactive display is unlocked, notification permission for that foreground service, and approximate plus background location for periodic sunrise/sunset updates. Android may prompt for these permissions separately.
+
+Compass, pressure and location are read on the watch. The companion saves the last location and a short pressure history locally. The project has no account, analytics, or project-operated server. The watch's system location and weather providers may use their own network services under their own settings. The source code is available here for inspection.
+
+## Troubleshooting
+
+- **ADB cannot connect:** check that the watch and computer can reach each other, then read the *current* connect port from Wireless debugging. Pairing and connect ports are different.
+- **Compass is blank:** bind the Pip-Boy Compass source, open its app once, press **Enable compass** if needed, and wake/unlock the display. An invalid or stale sensor reading is intentionally hidden.
+- **No solar time:** turn on watch location, check approximate and background permissions for the companion, then tap a solar time or reopen its location screen.
+- **No phone battery:** install and bind a compatible RANGED_VALUE complication provider.
+- **Weather is blank after switching faces:** return to Pip-Boy and allow the watch's weather provider time to refresh. Check its own setup and permissions.
+- **An update fails with a signature error:** debug builds from different machines have different signing keys. Uninstalling the old package and reinstalling removes its local settings; save anything you need first.
