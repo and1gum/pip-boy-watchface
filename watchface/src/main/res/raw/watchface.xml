@@ -4987,37 +4987,31 @@
       <BoundingRoundBox x="247" y="326" width="110" height="71" outlinePadding="2" cornerRadius="10" />
       <Complication type="RANGED_VALUE">
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="254" startY="332" endX="254" endY="385">
+          <Line startX="254" startY="342" endX="254" endY="375">
             <Stroke color="#1B3821" thickness="8" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="332" endX="267" endY="332">
+          <Line startX="263" startY="342" endX="267" endY="342">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="345" endX="267" endY="345">
+          <Line startX="263" startY="353" endX="267" endY="353">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="358" endX="267" endY="358">
+          <Line startX="263" startY="364" endX="267" endY="364">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="371" endX="267" endY="371">
-            <Stroke color="#579B5D" thickness="1" cap="ROUND" />
-          </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
-        </PartDraw>
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="384" endX="267" endY="384">
+          <Line startX="263" startY="375" endX="267" endY="375">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
@@ -5046,8 +5040,8 @@
             </Expressions>
             <Compare expression="rising">
               <PartDraw x="0" y="0" width="480" height="480">
-                <Line startX="254" startY="385" endX="254" endY="385">
-                  <Transform target="endY" value="385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
+                <Line startX="254" startY="375" endX="254" endY="375">
+                  <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#FFC15C" thickness="8" cap="ROUND" />
                 </Line>
                 <Variant mode="AMBIENT" target="alpha" value="255" />
@@ -5055,8 +5049,8 @@
             </Compare>
             <Compare expression="falling">
               <PartDraw x="0" y="0" width="480" height="480">
-                <Line startX="254" startY="385" endX="254" endY="385">
-                  <Transform target="endY" value="385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
+                <Line startX="254" startY="375" endX="254" endY="375">
+                  <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#65B8FF" thickness="8" cap="ROUND" />
                 </Line>
                 <Variant mode="AMBIENT" target="alpha" value="255" />
@@ -5064,8 +5058,8 @@
             </Compare>
             <Compare expression="stable">
               <PartDraw x="0" y="0" width="480" height="480">
-                <Line startX="254" startY="385" endX="254" endY="385">
-                  <Transform target="endY" value="385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
+                <Line startX="254" startY="375" endX="254" endY="375">
+                  <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#91F894" thickness="8" cap="ROUND" />
                 </Line>
                 <Variant mode="AMBIENT" target="alpha" value="255" />
@@ -5073,8 +5067,8 @@
             </Compare>
             <Default>
               <PartDraw x="0" y="0" width="480" height="480">
-                <Line startX="254" startY="385" endX="254" endY="385">
-                  <Transform target="endY" value="385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
+                <Line startX="254" startY="375" endX="254" endY="375">
+                  <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#53665B" thickness="8" cap="ROUND" />
                 </Line>
                 <Variant mode="AMBIENT" target="alpha" value="255" />
@@ -5085,37 +5079,31 @@
       </Complication>
       <Complication type="EMPTY">
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="254" startY="332" endX="254" endY="385">
+          <Line startX="254" startY="342" endX="254" endY="375">
             <Stroke color="#1B3821" thickness="8" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="332" endX="267" endY="332">
+          <Line startX="263" startY="342" endX="267" endY="342">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="345" endX="267" endY="345">
+          <Line startX="263" startY="353" endX="267" endY="353">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="358" endX="267" endY="358">
+          <Line startX="263" startY="364" endX="267" endY="364">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="371" endX="267" endY="371">
-            <Stroke color="#579B5D" thickness="1" cap="ROUND" />
-          </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
-        </PartDraw>
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="263" startY="384" endX="267" endY="384">
+          <Line startX="263" startY="375" endX="267" endY="375">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
           <Variant mode="AMBIENT" target="alpha" value="255" />

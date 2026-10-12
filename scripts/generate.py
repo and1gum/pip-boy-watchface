@@ -638,8 +638,8 @@ def generate():
         provider='ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.PressureSource',default_type='RANGED_VALUE')
     for kind in ('RANGED_VALUE','EMPTY'):
         payload=node(pressure,'Complication',type=kind)
-        line(payload,254,332,254,385,'#1B3821',8)
-        for y in (332,345,358,371,384):
+        line(payload,254,342,254,375,'#1B3821',8)
+        for y in (342,353,364,375):
             line(payload,263,y,267,y,DIVIDER,1)
         text(payload,'mm',279,362,42,26,SECONDARY_SIZE).find('Text').set('align','START')
         if kind=='EMPTY':
@@ -656,8 +656,8 @@ def generate():
         default=node(trend.find('Condition'),'Default')
         for owner,color in [(states['rising'],AMBER),(states['falling'],'#65B8FF'),
                             (states['stable'],GREEN),(default,'#53665B')]:
-            shape=node(draw(owner),'Line',startX=254,startY=385,endX=254,endY=385)
-            node(shape,'Transform',target='endY',value='385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)')
+            shape=node(draw(owner),'Line',startX=254,startY=375,endX=254,endY=375)
+            node(shape,'Transform',target='endY',value='375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)')
             node(shape,'Stroke',color=color,thickness=8,cap='ROUND')
     # Both solar times are calculated for the local calendar day by the companion.
     for slot_id,label,x,start,end,field in (

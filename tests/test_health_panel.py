@@ -1,4 +1,5 @@
 import unittest
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from PIL import ImageFont
@@ -13,22 +14,29 @@ class HealthPanelTest(unittest.TestCase):
    self.assertIsNotNone(slot.find(f"Complication[@type='{kind}']"))
   self.assertIsNotNone(face.find(".//Group[@name='pressure_trend']"))
 
- def test_pressure_uses_long_color_column_without_direction_arrow(self):
+ def test_pressure_column_clears_panel_edges_without_direction_arrow(self):
   face=ET.parse(ROOT/'watchface/src/main/res/raw/watchface.xml').getroot()
   slot=face.find(".//ComplicationSlot[@slotId='4']")
   self.assertEqual(slot.findall(".//PartDraw[@name='pressure_direction']"),[])
   ranged=slot.find("Complication[@type='RANGED_VALUE']")
+  track=ranged.find("./PartDraw/Line[@startX='254'][@endX='254']")
+  self.assertIsNotNone(track)
+  top,bottom=int(track.get('startY')),int(track.get('endY'))
+  radius=int(track.find('Stroke').get('thickness'))/2
+  self.assertGreater(bottom-top,24) # Longer than the original shortened bar.
+  self.assertGreater(top-radius-328,6) # Gap below the panel rule.
+  self.assertLess(bottom+radius,385) # Clears the lower battery area.
   for state in ('rising','falling','stable'):
    branch=ranged.find(f".//Group[@name='pressure_trend']/Condition/Compare[@expression='{state}']")
    self.assertIsNotNone(branch)
    fill=branch.find(".//Line[@startX='254'][@endX='254']")
    self.assertIsNotNone(fill)
-   self.assertEqual(fill.get('startY'),'385')
-   self.assertEqual(fill.get('endY'),'385')
-   self.assertEqual(fill.find('Transform').get('value'),
-                    '385 - 53*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)')
-  track=ranged.find(".//Line[@startX='254'][@endX='254'][@startY='332'][@endY='385']")
-  self.assertIsNotNone(track)
+   self.assertEqual(int(fill.get('startY')),bottom)
+   self.assertEqual(int(fill.get('endY')),bottom)
+   transform=fill.find('Transform').get('value')
+   match=re.fullmatch(r'(\d+) - (\d+)\*clamp\(\(\[COMPLICATION.RANGED_VALUE_VALUE\]-950\)/100,0,1\)',transform)
+   self.assertIsNotNone(match)
+   self.assertEqual((int(match[1]),int(match[2])),(bottom,bottom-top))
  def test_large_pulse_and_icons_leave_sectors_and_weather_clear(self):
   face=ET.parse(ROOT/'watchface/src/main/res/raw/watchface.xml').getroot()
   for part in face.findall(".//PartText[@name='pulse_tap']"):

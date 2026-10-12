@@ -134,7 +134,7 @@ IDs 4, 5 and 6, preserving earlier bindings. Solar hit boxes remain outside
 the main time, and both text and icons open the companion's solar details.
 The shared weather rectangle retains priority; both edges opened WeatherActivity.
 Unknown pressure trend has a neutral column. The pressure column now spans
-y=332…385 with no direction symbols; its color indicates the trend, while
+y=342…375 with no direction symbols; its color indicates the trend, while
 the pressure number remains beside it.
 
 ## Continuous sector strokes — 2026-10-12
