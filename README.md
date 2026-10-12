@@ -1,12 +1,12 @@
 # Pip-Boy watch face
 
-A green instrument-panel watch face for Wear OS, built with Watch Face Format 3. Large digital time sits inside a compass rim, with an analog hand, weather, steps, heart rate, watch and phone battery, pressure, sunrise and sunset. A calendar event follows the upper arc.
+A Fallout-inspired Pip-Boy style watch face for Wear OS. Large digital time is the focus, with hour, minute and second hands layered over it. The face also shows weather, date, the next calendar event, heart rate, steps, watch and phone battery, compass, barometric pressure, sunrise and sunset.
 
 **Status:** experimental source project, version 0.2.0. Tested on a Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) running Wear OS 7 (Android 17), 498 × 498 display. It has not been packaged for the Play Store. The compass animation and battery impact still need longer real-world testing.
 
 ![Active mode captured on the watch](docs/images/active-on-watch.png) ![Ambient mode captured on the watch](docs/images/ambient-on-watch.png)
 
-*Both images are unedited screenshots of the test watch: active mode on the left, ambient mode on the right.*
+*Both images are unedited screenshots of the test watch: active mode on the left, ambient mode on the right. The [updated hand order on the watch](docs/images/hand-order-on-watch.png) was captured after the fix; weather was temporarily unavailable after the APK update.*
 
 [Українською](README.uk.md) · [Install on a watch](docs/install.md) · [Source and limitations](docs/data-sources.md)
 

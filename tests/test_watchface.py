@@ -101,6 +101,17 @@ class WatchFaceTest(unittest.TestCase):
             if group.get('name', '').startswith('weather_'):
                 self.assertIsNone(group.find("./Variant[@mode='AMBIENT'][@value='0']"))
 
+    def test_hands_are_above_every_readout_in_second_minute_hour_order(self):
+        scene = self.face.find('Scene')
+        hands = scene[-1]
+        self.assertEqual(hands.get('name'), 'hands_layer')
+        self.assertIsNotNone(hands.find("./Variant[@mode='AMBIENT'][@value='0']"))
+        self.assertEqual([part.get('name') for part in hands.findall('./Group')],
+                         ['hand_hour', 'hand_minute', 'hand_second'])
+        self.assertEqual(len(self.face.findall(".//Group[@name='hand_hour']")), 1)
+        self.assertEqual(len(self.face.findall(".//Group[@name='hand_minute']")), 1)
+        self.assertEqual(len(self.face.findall(".//Group[@name='hand_second']")), 1)
+
     def test_compass_rotates_only_limb_and_preserves_real_north(self):
         slot = self.face.find(".//ComplicationSlot[@slotId='3']")
         self.assertIsNotNone(slot)

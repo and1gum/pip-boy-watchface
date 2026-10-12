@@ -22,3 +22,16 @@ red open counterweight and amber-outlined dark hub on the active watchface.
 Transparency correction: removed the counterweight Fill and split its shaft
 at Y260.5/271.5 so neither the shaft nor a background disk covers the interior.
 Build,34 Python tests and WFF3 validation passed.
+
+## Hand stacking — 2026-10-12
+
+The steps group was lifted to a later Scene position for tap handling and could
+cover the hands. The active hands now form the final Scene group. The group is
+hidden in ambient mode; within it the hour hand is drawn first, then minute,
+then second. Every complication, step sector and other readout is below them.
+The center pin is drawn below the hands. Host ordering test and full build/lint
+passed. On the Galaxy Watch Ultra2, the updated APK installed successfully and
+its steps icon still opened Samsung Health Steps. A direct watch screenshot with
+the second hand on the left is in `docs/images/hand-order-on-watch.png`. Weather
+was temporarily unavailable after reinstalling, as described in
+`docs/weather-recovery.md`; the screenshot is unedited.

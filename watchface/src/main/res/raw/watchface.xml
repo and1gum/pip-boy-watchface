@@ -1829,50 +1829,6 @@
           <Stroke color="#579B5D" thickness="1" cap="ROUND" />
         </Line>
       </PartDraw>
-      <Group name="hand_hour" x="0" y="0" width="480" height="480">
-        <Transform target="angle" value="[HOUR_0_11_MINUTE]*30" />
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="240" startY="257" endX="240" endY="93">
-            <Stroke color="#D9FFC15C" thickness="6" cap="ROUND" />
-          </Line>
-        </PartDraw>
-      </Group>
-      <Group name="hand_minute" x="0" y="0" width="480" height="480">
-        <Transform target="angle" value="[MINUTE_SECOND]*6" />
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="240" startY="262" endX="240" endY="37">
-            <Stroke color="#D9FFC15C" thickness="4" cap="ROUND" />
-          </Line>
-        </PartDraw>
-      </Group>
-      <Group name="hand_second" x="0" y="0" width="480" height="480">
-        <Transform target="angle" value="[SECOND]*6" />
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="240" startY="260.5" endX="240" endY="50">
-            <Stroke color="#FF3939" thickness="2.4" cap="ROUND" />
-          </Line>
-        </PartDraw>
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="240" startY="271.5" endX="240" endY="273">
-            <Stroke color="#FF3939" thickness="2.4" cap="ROUND" />
-          </Line>
-        </PartDraw>
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Ellipse x="235" y="261" width="10" height="10">
-            <Stroke color="#FF3939" thickness="1.8" />
-          </Ellipse>
-        </PartDraw>
-      </Group>
-      <PartDraw x="0" y="0" width="480" height="480">
-        <Ellipse x="235.5" y="235.5" width="9" height="9">
-          <Fill color="#020704" />
-        </Ellipse>
-      </PartDraw>
-      <PartDraw x="0" y="0" width="480" height="480">
-        <Ellipse x="235.5" y="235.5" width="9" height="9">
-          <Stroke color="#FFC15C" thickness="2" />
-        </Ellipse>
-      </PartDraw>
     </Group>
     <ComplicationSlot slotId="1" displayName="calendar" supportedTypes="LONG_TEXT SHORT_TEXT EMPTY" x="0" y="0" width="480" height="480" scaleX="1.0" scaleY="1.0">
       <Variant mode="AMBIENT" target="alpha" value="0" />
@@ -5279,5 +5235,52 @@
       </Rectangle>
       <Launch target="com.samsung.android.watch.weather" />
     </PartDraw>
+    <Group name="hands_layer" x="0" y="0" width="480" height="480" scaleX="1.0" scaleY="1.0">
+      <Variant mode="AMBIENT" target="alpha" value="0" />
+      <PartDraw x="0" y="0" width="480" height="480">
+        <Ellipse x="235.5" y="235.5" width="9" height="9">
+          <Fill color="#020704" />
+        </Ellipse>
+      </PartDraw>
+      <PartDraw x="0" y="0" width="480" height="480">
+        <Ellipse x="235.5" y="235.5" width="9" height="9">
+          <Stroke color="#FFC15C" thickness="2" />
+        </Ellipse>
+      </PartDraw>
+      <Group name="hand_hour" x="0" y="0" width="480" height="480">
+        <Transform target="angle" value="[HOUR_0_11_MINUTE]*30" />
+        <PartDraw x="0" y="0" width="480" height="480">
+          <Line startX="240" startY="257" endX="240" endY="93">
+            <Stroke color="#D9FFC15C" thickness="6" cap="ROUND" />
+          </Line>
+        </PartDraw>
+      </Group>
+      <Group name="hand_minute" x="0" y="0" width="480" height="480">
+        <Transform target="angle" value="[MINUTE_SECOND]*6" />
+        <PartDraw x="0" y="0" width="480" height="480">
+          <Line startX="240" startY="262" endX="240" endY="37">
+            <Stroke color="#D9FFC15C" thickness="4" cap="ROUND" />
+          </Line>
+        </PartDraw>
+      </Group>
+      <Group name="hand_second" x="0" y="0" width="480" height="480">
+        <Transform target="angle" value="[SECOND]*6" />
+        <PartDraw x="0" y="0" width="480" height="480">
+          <Line startX="240" startY="260.5" endX="240" endY="50">
+            <Stroke color="#FF3939" thickness="2.4" cap="ROUND" />
+          </Line>
+        </PartDraw>
+        <PartDraw x="0" y="0" width="480" height="480">
+          <Line startX="240" startY="271.5" endX="240" endY="273">
+            <Stroke color="#FF3939" thickness="2.4" cap="ROUND" />
+          </Line>
+        </PartDraw>
+        <PartDraw x="0" y="0" width="480" height="480">
+          <Ellipse x="235" y="261" width="10" height="10">
+            <Stroke color="#FF3939" thickness="1.8" />
+          </Ellipse>
+        </PartDraw>
+      </Group>
+    </Group>
   </Scene>
 </WatchFace>

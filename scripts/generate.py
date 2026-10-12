@@ -530,12 +530,17 @@ def generate():
     node(reading,'Launch',target='HEALTH_HEART_RATE')
     line(active,108,328,345,328,DIVIDER,1)
     line(active,240,337,240,386,DIVIDER,1)
-    # Hands share system time, update only in active mode, and remain secondary.
+    # Raise the hands after all readouts below; order within this group is
+    # hour, minute, second. The ambient variant hides all three together.
+    hands=group(scene,'hands_layer')
+    ambient(hands)
+    ellipse(hands,235.5,235.5,9,9,'#020704',fill=True)
+    ellipse(hands,235.5,235.5,9,9,AMBER,2)
     for name,value,length,tail,width,color in [
         ('hour','[HOUR_0_11_MINUTE]*30',147,17,6,'#D9FFC15C'),
         ('minute','[MINUTE_SECOND]*6',203,22,4,'#D9FFC15C'),
         ('second','[SECOND]*6',190,33,2.4,'#FF3939')]:
-        hand=group(active,'hand_'+name)
+        hand=group(hands,'hand_'+name)
         node(hand,'Transform',target='angle',value=value)
         if name == 'second':
             # Leave the counterweight interior transparent, including its shaft.
@@ -544,8 +549,6 @@ def generate():
             ellipse(hand,235,261,10,10,color,1.8)
         else:
             line(hand,240,240+tail,240,240-length,color,width)
-    ellipse(active,235.5,235.5,9,9,'#020704',fill=True)
-    ellipse(active,235.5,235.5,9,9,AMBER,2)
     # Scene-level complication slots are required by the WFF schema.
     calendar=slot(scene,'1','calendar','LONG_TEXT SHORT_TEXT EMPTY',(50,22,380,160),
         system='NEXT_EVENT',default_type='LONG_TEXT')
@@ -697,6 +700,8 @@ def generate():
     rectangle=node(hit,'Rectangle',x=0,y=0,width=305,height=78)
     node(rectangle,'Fill',color='#01000000')
     node(hit,'Launch',target='com.samsung.android.watch.weather')
+    scene.remove(hands)
+    scene.append(hands)
     # All visible composition shares the face center, including Scene-level slots.
     # Keep a small edge inset for circular text and round hour-marker caps.
     for element in scene:
