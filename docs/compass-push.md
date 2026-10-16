@@ -9,7 +9,15 @@ it is not corrected to true north.
 
 A specialUse foreground service keeps the sensor client eligible while the face
 is active. Tracking requires an enabled provider, at least one bound instance,
-PowerManager interactive state, Display.STATE_ON, and unlocked keyguard.
+Display.STATE_ON and unlocked keyguard. PowerManager.isInteractive() is not a
+requirement: Samsung wrist-raise can show the active face in DREAMING_SCREEN_ON
+while that flag remains false. Display.STATE_DOZE / DOZE_SUSPEND still pause
+tracking; display-change events resume it when the screen returns to ON.
+On Android 36+, the listener explicitly subscribes to
+[EVENT_TYPE_DISPLAY_STATE](https://developer.android.com/reference/android/hardware/display/DisplayManager#EVENT_TYPE_DISPLAY_STATE),
+as the legacy subscription omits state-only events. Older Android retains the
+legacy listener. Pausing cancels only the compass timers, preserving pending
+display callbacks.
 Display and screen events recheck these gates. A ten-second eligibility check
 covers watches that do not emit an unlock or screen-on event when leaving ambient
 mode. It does not read sensors or hold a wake lock while paused. On inactivity
@@ -21,7 +29,7 @@ when the compass is enabled and a slot remains assigned. Force-stop requires
 reopening the application.
 
 The public API does not expose exact watchface visibility. Tracking may continue
-inside another app while the screen stays interactive and unlocked. Removing the
+inside another app while the display stays ON and unlocked. Removing the
 last instance or pressing Stop ends the service. No claim of zero battery use is
 made; a physical overnight/day measurement remains required.
 
@@ -40,6 +48,35 @@ fixed hour marks, and hides the compass in ambient mode.
 The runtime may throttle public push delivery. This is not a promise of Samsung
 stock-compass smoothness. Physical rate, expiry handling, and wake recovery must
 be established on the target watch.
+
+## Wrist-raise recovery, 2026-10-16
+
+Samsung can enter DREAMING_SCREEN_ON on wrist-raise: the face leaves ambient
+mode and the display is ON, but PowerManager.isInteractive() remains false.
+Requiring that flag prevented the sensor from starting. Tracking now follows
+Display.STATE_ON plus the existing enabled, slot and unlocked gates.
+
+The initial policy-only update passed 50 Python tests, 19 Java tests and both Android
+lint/assemble tasks; installation returned Success. On SM-L715F, a natural
+wrist-raise logged displayState=2 / interactive=false with a successful sensor
+start. The first delivered heading followed the tilt event by about 0.48 s.
+Return to AOD logged sensor stop and NoData; sensorservice showed no active
+compass connection. The user confirmed compass visibility on wrist-raise.
+The first activation during package-replacement recovery took about 2.3 s;
+later wrist-raises still failed to start the sensor despite an ON display.
+The listener now explicitly subscribes to state events on Android 36+.
+This follow-up passed the same test/lint/build suite and was installed with
+`adb install --no-streaming -r` (Success); package update time was confirmed.
+Two subsequent natural wrist-raises started the sensor about 0.16 s and 0.09 s
+after the tilt event, both with displayState=2 / interactive=false. Both returns
+to AOD stopped the sensor; the final state was Dozing with no active compass
+sensor connection. The user confirmed fast compass appearance on both raises.
+These two cycles verify this scenario, not long-term or reboot reliability.
+
+Later the same process failed three consecutive wrist-raises after Samsung
+Freecess froze it despite its foreground service. A full wake unfroze it and
+sensor delivery resumed. The display-policy change alone does not establish
+reliable recovery; see [the follow-up diagnosis](compass-resume-diagnosis-2026-10-16.md).
 
 ## Verification
 

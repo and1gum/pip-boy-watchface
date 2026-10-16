@@ -65,17 +65,29 @@ On the tested watch, Samsung Barometer provides only `SHORT_TEXT` and `LONG_TEXT
 
 The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. The linked phone-battery provider is **not included**: install its phone and watch apps first. If you do not use it, leave that slot empty.
 
-Open **Pip-Boy Compass** in the watch's app list once after assigning the compass. It then restarts automatically after a watch reboot or companion update, provided tracking is enabled and the compass slot remains assigned. Its **Stop compass / Enable compass** button controls tracking. The sensor pauses when the display sleeps, enters ambient mode, or locks, and may take up to ten seconds to resume after unlocking. Its reading is magnetic heading, so it can differ from true north.
+Open **Pip-Boy Compass** in the watch's app list once after assigning the compass. It then restarts automatically after a watch reboot or companion update, provided tracking is enabled and the compass slot remains assigned. Its **Stop compass / Enable compass** button controls tracking. The sensor pauses when the display sleeps, enters ambient mode, or locks, and may take up to ten seconds to resume after unlocking. Wrist-raise activation is supported even when Samsung keeps the system in its dreaming state. Its reading is magnetic heading, so it can differ from true north.
 
 To show sunrise and sunset, allow location services on the watch, grant the companion approximate location and **Allow all the time** background location in the watch's app permissions, then tap a solar time on the face. This opens a small screen that fetches the watch's location; use **Update location** if needed. Without a current location the last saved position may be used, or the values may be unavailable.
 
 ## Permissions and privacy
 
-The watch-face APK has no Android runtime permissions. The companion requests foreground-service permissions to keep its compass provider available while the interactive display is unlocked, permission to restart it after boot, notification permission for that foreground service, and approximate plus background location for periodic sunrise/sunset updates. Android may prompt for runtime permissions separately.
+The watch-face APK has no Android runtime permissions. The companion requests foreground-service permissions to keep its compass provider available while the display is ON and unlocked, permission to restart it after boot, notification permission for that foreground service, and approximate plus background location for periodic sunrise/sunset updates. Android may prompt for runtime permissions separately.
 
 Compass, pressure and location are read on the watch. The companion saves the last location and a short pressure history locally. The project has no account, analytics, or project-operated server. The watch's system location and weather providers may use their own network services under their own settings. The source code is available here for inspection.
 
 ## Troubleshooting
+
+On the tested Samsung SM-L715F, Freecess froze the compass companion in AOD
+despite its foreground service. A package-specific battery optimization
+exemption prevented freezing in a trial with 78 seconds in AOD and three
+successful wrist-raises. With ADB connected, apply it to the watch:
+
+```sh
+adb shell cmd deviceidle whitelist +ua.and1gum.pipboy.compass
+```
+
+The sensor still pauses in AOD. To remove the exemption, replace `+` with `-`.
+Long-term battery impact and behavior after reboot remain unmeasured.
 
 - **ADB cannot connect:** check that the watch and computer can reach each other, then read the *current* connect port from Wireless debugging. Pairing and connect ports are different.
 - **Compass is blank:** confirm that the companion is installed. If the source was not selected automatically, choose Pip-Boy Compass in the editor. Open its app once, press **Enable compass** if needed, and wake/unlock the display. An invalid or stale sensor reading is intentionally hidden.

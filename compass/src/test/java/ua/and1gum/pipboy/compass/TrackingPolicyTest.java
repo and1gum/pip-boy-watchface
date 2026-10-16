@@ -5,12 +5,16 @@ import static org.junit.Assert.*;
 
 public class TrackingPolicyTest {
     @Test public void stopsForEveryInactiveDisplayAndSessionState() {
-        assertTrue(TrackingPolicy.shouldRead(true, true, true, true, true));
-        assertFalse(TrackingPolicy.shouldRead(false, true, true, true, true));
-        assertFalse(TrackingPolicy.shouldRead(true, false, true, true, true));
-        assertFalse(TrackingPolicy.shouldRead(true, true, false, true, true));
-        assertFalse(TrackingPolicy.shouldRead(true, true, true, false, true)); // AOD
-        assertFalse(TrackingPolicy.shouldRead(true, true, true, true, false)); // locked
+        assertFalse(TrackingPolicy.shouldRead(false, true, true, true));
+        assertFalse(TrackingPolicy.shouldRead(true, false, true, true));
+        assertFalse(TrackingPolicy.shouldRead(true, true, false, true)); // AOD
+        assertFalse(TrackingPolicy.shouldRead(true, true, true, false)); // locked
+    }
+    @Test public void readsOnWristRaiseAndStopsOnReturnToDoze() {
+        // Display ON is sufficient; PowerManager interactivity is deliberately not an input.
+        assertTrue(TrackingPolicy.shouldRead(true, true, true, true));
+        assertFalse(TrackingPolicy.shouldRead(true, true, false, true));
+        assertTrue(TrackingPolicy.shouldRead(true, true, true, true));
     }
     @Test public void publishesFirstFixAndChangesWithoutFloodingOrWraparoundSpikes() {
         assertTrue(TrackingPolicy.shouldPublish(Float.NaN, 0, 0, 10));

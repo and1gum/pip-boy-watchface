@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.content.pm.ServiceInfo;
 import android.hardware.display.DisplayManager;
 import android.os.Handler;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -30,7 +31,7 @@ public final class CompassTrackingService extends Service implements DisplayMana
     private final HeadingMotion motion = new HeadingMotion();
     private long publishedAt;
     private boolean hadFreshData;
-    // Some watches keep the display ON through ambient mode and omit an unlock broadcast.
+    // Some watches omit an unlock broadcast when leaving ambient mode.
     // Recheck eligibility without reading sensors or holding a wake lock while paused.
     private final Runnable retryWhenEligible = this::refresh;
     private final Runnable tick = new Runnable() {
@@ -73,7 +74,16 @@ public final class CompassTrackingService extends Service implements DisplayMana
             publishReading();
         });
         displays = getSystemService(DisplayManager.class);
-        displays.registerDisplayListener(this, handler);
+        if (Build.VERSION.SDK_INT >= 36) {
+            // State-only changes (including wrist-raise while dreaming) need an explicit
+            // subscription on newer Android; the legacy overload omits this event.
+            displays.registerDisplayListener(getMainExecutor(),
+                    DisplayManager.EVENT_TYPE_DISPLAY_ADDED | DisplayManager.EVENT_TYPE_DISPLAY_REMOVED
+                            | DisplayManager.EVENT_TYPE_DISPLAY_CHANGED | DisplayManager.EVENT_TYPE_DISPLAY_STATE,
+                    this);
+        } else {
+            displays.registerDisplayListener(this, handler);
+        }
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
@@ -82,7 +92,6 @@ public final class CompassTrackingService extends Service implements DisplayMana
     private boolean allowed() {
         Display display = displays.getDisplay(Display.DEFAULT_DISPLAY);
         return TrackingPolicy.shouldRead(CompassState.enabled(this), CompassState.hasSlots(this),
-                getSystemService(PowerManager.class).isInteractive(),
                 display != null && display.getState() == Display.STATE_ON,
                 !getSystemService(KeyguardManager.class).isKeyguardLocked());
     }
@@ -100,7 +109,9 @@ public final class CompassTrackingService extends Service implements DisplayMana
             published = Float.NaN;
             hadFreshData = false;
             CompassState.reading = sensor.start();
-            Log.i("PipBoyCompass", "Sensor started=" + CompassState.reading);
+            Log.i("PipBoyCompass", "Sensor started=" + CompassState.reading
+                    + " displayState=" + (currentDisplay == null ? Display.STATE_UNKNOWN : currentDisplay.getState())
+                    + " interactive=" + getSystemService(PowerManager.class).isInteractive());
             handler.removeCallbacks(tick);
             if (CompassState.reading) handler.postDelayed(tick, 33);
         } else if (!allowed && CompassState.reading) {
@@ -128,7 +139,8 @@ public final class CompassTrackingService extends Service implements DisplayMana
         }
     }
     private void pause() {
-        handler.removeCallbacksAndMessages(null);
+        handler.removeCallbacks(tick);
+        handler.removeCallbacks(retryWhenEligible);
         sensor.stop();
         motion.reset();
         CompassState.clear();
