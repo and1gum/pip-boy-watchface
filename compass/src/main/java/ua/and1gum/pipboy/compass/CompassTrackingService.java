@@ -16,7 +16,6 @@ import android.os.Handler;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Display;
@@ -31,11 +30,15 @@ public final class CompassTrackingService extends Service implements DisplayMana
     private final HeadingMotion motion = new HeadingMotion();
     private long publishedAt;
     private boolean hadFreshData;
+    private KeyguardManager keyguard;
+    private int diagnosticGates = -1;
+    private boolean awaitingFirstSample;
     // Some watches omit an unlock broadcast when leaving ambient mode.
     // Recheck eligibility without reading sensors or holding a wake lock while paused.
     private final Runnable retryWhenEligible = this::refresh;
     private final Runnable tick = new Runnable() {
         @Override public void run() {
+            Diagnostics.count("tick");
             refresh();
             if (CompassState.reading) {
                 publishReading();
@@ -44,7 +47,10 @@ public final class CompassTrackingService extends Service implements DisplayMana
         }
     };
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) { refresh(); }
+        @Override public void onReceive(Context context, Intent intent) {
+            if (Diagnostics.enabled()) Diagnostics.event(intent.getAction() == null ? "screenBroadcast" : intent.getAction(), 0);
+            refresh();
+        }
     };
     static void start(Context context) {
         if (!CompassState.enabled(context) || !CompassState.hasSlots(context)) return;
@@ -68,12 +74,18 @@ public final class CompassTrackingService extends Service implements DisplayMana
         startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
         WindowManager wm = getSystemService(WindowManager.class);
         sensor = new CompassSensor(this, wm.getDefaultDisplay().getRotation(), (degrees, accuracy) -> {
+            Diagnostics.count("sensorSample");
             if (accuracy >= 1) motion.target(sensor.continuousHeading(), SystemClock.elapsedRealtime());
             CompassState.accuracy = accuracy;
             CompassState.measuredAt = SystemClock.elapsedRealtime();
+            if (awaitingFirstSample && accuracy >= 1) {
+                awaitingFirstSample = false;
+                Diagnostics.event("firstAccurateSample", accuracy);
+            }
             publishReading();
         });
         displays = getSystemService(DisplayManager.class);
+        keyguard = getSystemService(KeyguardManager.class);
         if (Build.VERSION.SDK_INT >= 36) {
             // State-only changes (including wrist-raise while dreaming) need an explicit
             // subscription on newer Android; the legacy overload omits this event.
@@ -89,14 +101,17 @@ public final class CompassTrackingService extends Service implements DisplayMana
         filter.addAction(Intent.ACTION_USER_PRESENT);
         registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
-    private boolean allowed() {
-        Display display = displays.getDisplay(Display.DEFAULT_DISPLAY);
-        return TrackingPolicy.shouldRead(CompassState.enabled(this), CompassState.hasSlots(this),
-                display != null && display.getState() == Display.STATE_ON,
-                !getSystemService(KeyguardManager.class).isKeyguardLocked());
-    }
     private void refresh() {
+        Diagnostics.count("refresh");
         Display currentDisplay=displays.getDisplay(Display.DEFAULT_DISPLAY);
+        boolean enabled = CompassState.enabled(this);
+        boolean hasSlots = CompassState.hasSlots(this);
+        boolean displayOn = currentDisplay != null && currentDisplay.getState() == Display.STATE_ON;
+        boolean unlocked = !keyguard.isKeyguardLocked();
+        if (Diagnostics.enabled()) {
+            int gates = (enabled ? 1 : 0) | (hasSlots ? 2 : 0) | (displayOn ? 4 : 0) | (unlocked ? 8 : 0);
+            if (gates != diagnosticGates) { diagnosticGates = gates; Diagnostics.event("gates", gates); }
+        }
         if (currentDisplay != null && sensor.setRotation(currentDisplay.getRotation())) {
             motion.reset();
             published = Float.NaN;
@@ -104,22 +119,21 @@ public final class CompassTrackingService extends Service implements DisplayMana
             hadFreshData = false;
             CompassSource.requestUpdate(this);
         }
-        boolean allowed = allowed();
+        boolean allowed = TrackingPolicy.shouldRead(enabled, hasSlots, displayOn, unlocked);
         if (allowed && !CompassState.reading) {
             published = Float.NaN;
             hadFreshData = false;
+            awaitingFirstSample = true;
             CompassState.reading = sensor.start();
-            Log.i("PipBoyCompass", "Sensor started=" + CompassState.reading
-                    + " displayState=" + (currentDisplay == null ? Display.STATE_UNKNOWN : currentDisplay.getState())
-                    + " interactive=" + getSystemService(PowerManager.class).isInteractive());
+            Diagnostics.event("sensorStart", CompassState.reading ? 1 : 0);
             handler.removeCallbacks(tick);
             if (CompassState.reading) handler.postDelayed(tick, 33);
         } else if (!allowed && CompassState.reading) {
             pause();
         }
-        if (!CompassState.enabled(this) || !CompassState.hasSlots(this)) stopSelf();
+        if (!enabled || !hasSlots) stopSelf();
         handler.removeCallbacks(retryWhenEligible);
-        if (!CompassState.reading && CompassState.enabled(this) && CompassState.hasSlots(this))
+        if (!CompassState.reading && enabled && hasSlots)
             handler.postDelayed(retryWhenEligible, 10_000);
     }
     private void publishReading() {
@@ -135,26 +149,29 @@ public final class CompassTrackingService extends Service implements DisplayMana
             publishedAt = now;
             hadFreshData = true;
             CompassSource.requestUpdate(this);
-            Log.d("PipBoyCompass", "Push heading=" + published);
+            Diagnostics.count("published");
         }
     }
     private void pause() {
         handler.removeCallbacks(tick);
         handler.removeCallbacks(retryWhenEligible);
         sensor.stop();
+        awaitingFirstSample = false;
         motion.reset();
         CompassState.clear();
         hadFreshData = false;
         published = Float.NaN;
         CompassSource.requestUpdate(this);
-        Log.i("PipBoyCompass", "Sensor stopped; no polling while display inactive");
+        Diagnostics.event("sensorStop", 0);
     }
     @Override public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && "STOP".equals(intent.getAction())) CompassState.enable(this, false);
         refresh();
         return START_STICKY;
     }
-    @Override public void onDisplayChanged(int id) { if (id == Display.DEFAULT_DISPLAY) refresh(); }
+    @Override public void onDisplayChanged(int id) {
+        if (id == Display.DEFAULT_DISPLAY) { Diagnostics.event("displayCallback", id); refresh(); }
+    }
     @Override public void onDisplayAdded(int id) {}
     @Override public void onDisplayRemoved(int id) { refresh(); }
     @Override public IBinder onBind(Intent intent) { return null; }

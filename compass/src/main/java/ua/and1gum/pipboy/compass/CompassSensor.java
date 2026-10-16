@@ -14,6 +14,9 @@ final class CompassSensor implements SensorEventListener {
     private final SensorManager manager;
     private final Sensor sensor;
     private final Listener listener;
+    private final float[] matrix = new float[9];
+    private final float[] remapped = new float[9];
+    private final float[] orientation = new float[3];
     private int rotation;
     private final SmoothedHeading filter = new SmoothedHeading();
     private float continuous;
@@ -51,19 +54,19 @@ final class CompassSensor implements SensorEventListener {
     }
     int heading() { return heading; }
     @Override public void onSensorChanged(SensorEvent event) {
+        Diagnostics.count("rawSensorSample");
+        int previousAccuracy = accuracy;
         accuracy = event.accuracy;
-        float[] matrix = new float[9];
+        if (previousAccuracy != accuracy && Diagnostics.enabled()) Diagnostics.event("sensorAccuracy", accuracy);
         SensorManager.getRotationMatrixFromVector(matrix, event.values);
-        float[] remapped = new float[9];
         int x = SensorManager.AXIS_X, y = SensorManager.AXIS_Y;
         if (rotation == Surface.ROTATION_90) { x = SensorManager.AXIS_Y; y = SensorManager.AXIS_MINUS_X; }
         if (rotation == Surface.ROTATION_180) { x = SensorManager.AXIS_MINUS_X; y = SensorManager.AXIS_MINUS_Y; }
         if (rotation == Surface.ROTATION_270) { x = SensorManager.AXIS_MINUS_Y; y = SensorManager.AXIS_X; }
         SensorManager.remapCoordinateSystem(matrix, x, y, remapped);
-        float[] orientation = new float[3];
         SensorManager.getOrientation(remapped, orientation);
         double degrees = Math.toDegrees(orientation[0]);
-        if (!Double.isFinite(degrees)) return;
+        if (!Double.isFinite(degrees)) { Diagnostics.count("nonFiniteOrientation"); return; }
         timestamp = SystemClock.elapsedRealtime();
         if (accuracy >= SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
             continuous = (float) filter.update(degrees < 0 ? degrees + 360 : degrees, timestamp);
@@ -71,5 +74,9 @@ final class CompassSensor implements SensorEventListener {
         }
         listener.onHeading(heading, accuracy);
     }
-    @Override public void onAccuracyChanged(Sensor sensor, int accuracy) { this.accuracy = accuracy; }
+    @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        int previousAccuracy = this.accuracy;
+        this.accuracy = accuracy;
+        if (previousAccuracy != accuracy && Diagnostics.enabled()) Diagnostics.event("sensorAccuracy", accuracy);
+    }
 }

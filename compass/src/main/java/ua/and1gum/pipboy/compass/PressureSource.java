@@ -20,6 +20,7 @@ import java.util.List;
 public final class PressureSource extends ComplicationDataSourceService {
     private final Handler handler=new Handler(Looper.getMainLooper());
     @Override public void onComplicationRequest(ComplicationRequest request, ComplicationRequestListener listener) {
+        Diagnostics.count("pressureRequested");
         handler.post(()->{
             SensorManager manager=getSystemService(SensorManager.class);
             Sensor sensor=manager.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -35,8 +36,10 @@ public final class PressureSource extends ComplicationDataSourceService {
             if(!manager.registerListener(sampling,sensor,SensorManager.SENSOR_DELAY_NORMAL,handler)){
                 deliver(listener,new NoDataComplicationData());return;
             }
+            Diagnostics.event("pressureStart",0);
             handler.postDelayed(()->{
                 manager.unregisterListener(sampling);
+                Diagnostics.event("pressureStop",readings.size());
                 if(readings.isEmpty()){deliver(listener,new NoDataComplicationData());return;}
                 Collections.sort(readings);float p=readings.get(readings.size()/2);
                 long now=System.currentTimeMillis();
@@ -49,7 +52,7 @@ public final class PressureSource extends ComplicationDataSourceService {
                     .setText(new PlainComplicationText.Builder(PressureUnits.millimeters(p)).build())
                     .setTitle(new PlainComplicationText.Builder(trend).build())
                     .setValidTimeRange(TimeRange.between(Instant.now(),Instant.now().plusSeconds(900))).build();
-                deliver(listener,data);Log.i("PipBoyPressure","Pressure="+p+" trend="+trend);
+                deliver(listener,data);
             },1500);
         });
     }

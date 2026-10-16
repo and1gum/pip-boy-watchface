@@ -3,7 +3,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.shredzone.commons.suncalc.SunTimes;
 final class SolarTimes {
+ private static final SolarTimesCache CACHE=new SolarTimesCache(SolarTimes::calculate);
  static String[] forDay(ZonedDateTime date,double lat,double lon){
+  return CACHE.forDay(date,lat,lon);
+ }
+ private static String[] calculate(ZonedDateTime date,double lat,double lon){
   SunTimes times=SunTimes.compute().on(date.toLocalDate().atStartOfDay(date.getZone())).at(lat,lon).oneDay().execute();
   DateTimeFormatter fmt=DateTimeFormatter.ofPattern("HH:mm");
   return new String[]{times.getRise()==null?"—":fmt.format(times.getRise()),times.getSet()==null?"—":fmt.format(times.getSet())};

@@ -44,6 +44,7 @@ public final class SolarSource extends ComplicationDataSourceService {
   return best;
  }
  @Override public void onComplicationRequest(ComplicationRequest request,ComplicationRequestListener listener){
+  Diagnostics.count("solarRequested");
   Location location=latest(this);
   long now=System.currentTimeMillis();
   SharedPreferences prefs=getSharedPreferences("solar",0);
@@ -54,6 +55,7 @@ public final class SolarSource extends ComplicationDataSourceService {
     && now-prefs.getLong("attempt",0)>30*60_000L
     && manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
    prefs.edit().putLong("attempt",now).apply();
+   Diagnostics.event("locationAttempt",0);
    CancellationSignal cancel=new CancellationSignal();AtomicBoolean done=new AtomicBoolean();
    Handler main=new Handler(Looper.getMainLooper());
    Runnable fallback=()->{if(done.compareAndSet(false,true)){cancel.cancel();deliver(listener,latest(this));}};
@@ -62,7 +64,8 @@ public final class SolarSource extends ComplicationDataSourceService {
     manager.getCurrentLocation(LocationManager.NETWORK_PROVIDER,cancel,getMainExecutor(),fresh->{
      if(done.compareAndSet(false,true)){
       main.removeCallbacks(fallback);
-      if(fresh!=null){saveLocation(this,fresh);Log.i("PipBoySolar","Approximate location refreshed automatically");}
+      Diagnostics.event("locationResult",fresh==null?0:1);
+      if(fresh!=null){saveLocation(this,fresh);}
       deliver(listener,fresh!=null?fresh:latest(this));
       if(fresh!=null)refresh(this);
      }
@@ -80,7 +83,7 @@ public final class SolarSource extends ComplicationDataSourceService {
     .setTitle(new PlainComplicationText.Builder(times[1]).build())
     .setTapAction(PendingIntent.getActivity(this,4,new Intent(this,EnvironmentActivity.class),PendingIntent.FLAG_IMMUTABLE))
     .setValidTimeRange(TimeRange.between(Instant.now(),now.toLocalDate().plusDays(1).atStartOfDay(now.getZone()).toInstant())).build();
-   Log.i("PipBoySolar","Sunrise="+times[0]+" sunset="+times[1]);
+   Diagnostics.count("solarPayload");
   }
   try{listener.onComplicationData(payload);}catch(RemoteException disconnected){Log.d("PipBoySolar","Face disconnected");}
  }
