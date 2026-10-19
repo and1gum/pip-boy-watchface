@@ -169,6 +169,48 @@ def polar(radius, angle):
     return 240 + radius*math.sin(rad), 240 - radius*math.cos(rad)
 
 
+def metallic_hand(name, length, tail, width):
+    """Bake sharp polygon facets once; WFF only rotates the small image.
+
+    Broad dauphine proportions follow the user's physical-watch reference.
+    A 30% blend toward the dark facet keeps the metal contrast restrained.
+    Coordinates are relative to the shared pivot, with the tip pointing up.
+    """
+    scale = 8
+    padding = 2
+    image_width = math.ceil(width + 8)
+    image_width += image_width % 2
+    image_height = length + tail + 2*padding
+    canvas = Image.new('RGBA', (image_width*scale, image_height*scale))
+    painter = ImageDraw.Draw(canvas)
+
+    def polygon(points, color):
+        painter.polygon([(round((x+image_width/2)*scale),
+                          round((y+length+padding)*scale)) for x,y in points], fill=color)
+
+    half = width/2
+    tip = (0, -length)
+    left, right = (-half, -9), (half, -9)
+    back = (0, tail)
+    ridge = (-width*.12, -7)
+    silhouette = [tip, right, back, left]
+    # Tight 25% contact shadow; no blur/filter or changing light source.
+    polygon([(x+.5, y+.65) for x,y in silhouette], '#00000040')
+    polygon(silhouette, '#65451F')
+    # Inset the faces very slightly to retain a fine dark metal side edge.
+    polygon([tip, (half-.15,-9), back, ridge], '#E6AC58')
+    light, dark = (230,172,88), (109,75,39)
+    shade = tuple(round(a+(b-a)*.30) for a,b in zip(light,dark)) + (255,)
+    polygon([tip, ridge, back, (-half+.15,-9)], shade)
+    # A tapered sliver on the ridge, disappearing before the needle tip.
+    polygon([(-width*.012,-length*.86), ridge, back,
+             (ridge[0]+.30,-7)], '#FFD28A')
+    # Store at 2x logical resolution for the 480/498px device, antialiased.
+    canvas.resize((image_width*2,image_height*2), Image.Resampling.LANCZOS).save(
+        RES/'drawable'/f'hand_{name}_metal.png')
+    return 240-image_width//2, 240-length-padding, image_width, image_height
+
+
 def slot(scene, slot_id, label, types, box, provider=None, system='EMPTY', default_type='EMPTY'):
     s = node(scene, 'ComplicationSlot', slotId=slot_id, displayName=label,
              supportedTypes=types, x=0, y=0, width=480, height=480)
@@ -534,11 +576,9 @@ def generate():
     # hour, minute, second. The ambient variant hides all three together.
     hands=group(scene,'hands_layer')
     ambient(hands)
-    ellipse(hands,235.5,235.5,9,9,'#020704',fill=True)
-    ellipse(hands,235.5,235.5,9,9,AMBER,2)
     for name,value,length,tail,width,color in [
-        ('hour','[HOUR_0_11_MINUTE]*30',147,17,6,'#D9FFC15C'),
-        ('minute','[MINUTE_SECOND]*6',203,22,4,'#D9FFC15C'),
+        ('hour','[HOUR_0_11_MINUTE]*30',147,17,16.5,'#E6AC58'),
+        ('minute','[MINUTE_SECOND]*6',203,22,13.375,'#E6AC58'),
         ('second','[SECOND]*6',190,33,2.4,'#FF3939')]:
         hand=group(hands,'hand_'+name)
         node(hand,'Transform',target='angle',value=value)
@@ -548,7 +588,10 @@ def generate():
             line(hand,240,271.5,240,240+tail,color,width)
             ellipse(hand,235,261,10,10,color,1.8)
         else:
-            line(hand,240,240+tail,240,240-length,color,width)
+            image(hand,'hand_'+name+'_metal',*metallic_hand(name,length,tail,width))
+    # Compact mounting cap above both metal hands and the seconds shaft.
+    ellipse(hands,235.5,235.5,9,9,'#020704',fill=True)
+    ellipse(hands,235.5,235.5,9,9,'#E6AC58',1.3)
     # Scene-level complication slots are required by the WFF schema.
     calendar=slot(scene,'1','calendar','LONG_TEXT SHORT_TEXT EMPTY',(50,22,380,160),
         system='NEXT_EVENT',default_type='LONG_TEXT')
@@ -674,16 +717,8 @@ def generate():
                      launch='ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.EnvironmentActivity')
             icon=image(payload,label+'_horizon',icon_x,icon_y,33,33)
             node(icon,'Launch',target='ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.EnvironmentActivity')
-    # Pressure and today's solar events remain readable in AOD at the same
-    # full tint as the active date and weather; hardware controls dimming.
-    for slot_id in ('4','5','6'):
-        owner=scene.find(f"ComplicationSlot[@slotId='{slot_id}']")
-        owner.remove(owner.find("Variant[@mode='AMBIENT'][@target='alpha']"))
-        for part in owner.findall('.//PartText')+owner.findall('.//PartImage')+owner.findall('.//PartDraw'):
-            if part.tag=='PartDraw':
-                ambient(part,'alpha',255)
-            else:
-                ambient(part,'tintColor',AOD)
+    # Keep slot()'s ambient hiding for pressure and solar events: AOD contains
+    # only the date, digital time and the three weather positions.
     # One weather target between the clock, steps, batteries and heart rate.
     # Nonzero alpha retains a drawable surface for Samsung hit testing.
     hit=node(scene,'PartDraw',x=70,y=242,width=305,height=78,name='weather_hit')

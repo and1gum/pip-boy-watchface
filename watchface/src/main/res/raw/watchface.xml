@@ -4983,6 +4983,7 @@
       <Variant mode="AMBIENT" target="alpha" value="0" />
     </Group>
     <ComplicationSlot slotId="4" displayName="pressure" supportedTypes="RANGED_VALUE EMPTY" x="0" y="0" width="480" height="480" scaleX="1.0" scaleY="1.0">
+      <Variant mode="AMBIENT" target="alpha" value="0" />
       <DefaultProviderPolicy defaultSystemProvider="EMPTY" defaultSystemProviderType="RANGED_VALUE" primaryProvider="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.PressureSource" primaryProviderType="RANGED_VALUE" />
       <BoundingRoundBox x="247" y="326" width="110" height="71" outlinePadding="2" cornerRadius="10" />
       <Complication type="RANGED_VALUE">
@@ -4990,37 +4991,31 @@
           <Line startX="254" startY="342" endX="254" endY="375">
             <Stroke color="#1B3821" thickness="8" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="342" endX="267" endY="342">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="353" endX="267" endY="353">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="364" endX="267" endY="364">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="375" endX="267" endY="375">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartText x="279" y="362" width="42" height="26">
           <Text align="START" ellipsis="TRUE" maxLines="1">
             <Font family="terminal_bold" size="21" color="#91F894">mm</Font>
           </Text>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <PartText x="279" y="337" width="73" height="32" name="pressure_value">
           <Text align="START" ellipsis="TRUE" maxLines="1">
@@ -5029,7 +5024,6 @@
               </Template>
             </Font>
           </Text>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <Group name="pressure_trend" x="0" y="0" width="480" height="480">
           <Condition>
@@ -5044,7 +5038,6 @@
                   <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#FFC15C" thickness="8" cap="ROUND" />
                 </Line>
-                <Variant mode="AMBIENT" target="alpha" value="255" />
               </PartDraw>
             </Compare>
             <Compare expression="falling">
@@ -5053,7 +5046,6 @@
                   <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#65B8FF" thickness="8" cap="ROUND" />
                 </Line>
-                <Variant mode="AMBIENT" target="alpha" value="255" />
               </PartDraw>
             </Compare>
             <Compare expression="stable">
@@ -5062,7 +5054,6 @@
                   <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#91F894" thickness="8" cap="ROUND" />
                 </Line>
-                <Variant mode="AMBIENT" target="alpha" value="255" />
               </PartDraw>
             </Compare>
             <Default>
@@ -5071,7 +5062,6 @@
                   <Transform target="endY" value="375 - 33*clamp(([COMPLICATION.RANGED_VALUE_VALUE]-950)/100,0,1)" />
                   <Stroke color="#53665B" thickness="8" cap="ROUND" />
                 </Line>
-                <Variant mode="AMBIENT" target="alpha" value="255" />
               </PartDraw>
             </Default>
           </Condition>
@@ -5082,47 +5072,41 @@
           <Line startX="254" startY="342" endX="254" endY="375">
             <Stroke color="#1B3821" thickness="8" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="342" endX="267" endY="342">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="353" endX="267" endY="353">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="364" endX="267" endY="364">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartDraw x="0" y="0" width="480" height="480">
           <Line startX="263" startY="375" endX="267" endY="375">
             <Stroke color="#579B5D" thickness="1" cap="ROUND" />
           </Line>
-          <Variant mode="AMBIENT" target="alpha" value="255" />
         </PartDraw>
         <PartText x="279" y="362" width="42" height="26">
           <Text align="START" ellipsis="TRUE" maxLines="1">
             <Font family="terminal_bold" size="21" color="#91F894">mm</Font>
           </Text>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <PartText x="279" y="337" width="73" height="32" name="pressure_missing">
           <Text align="START" ellipsis="TRUE" maxLines="1">
             <Font family="terminal_bold" size="25" color="#91F894">—</Font>
           </Text>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
       </Complication>
     </ComplicationSlot>
     <ComplicationSlot slotId="5" displayName="sunrise" supportedTypes="SHORT_TEXT EMPTY" x="0" y="0" width="480" height="480" scaleX="1.0" scaleY="1.0">
+      <Variant mode="AMBIENT" target="alpha" value="0" />
       <DefaultProviderPolicy defaultSystemProvider="EMPTY" defaultSystemProviderType="SHORT_TEXT" primaryProvider="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.SolarSource" primaryProviderType="SHORT_TEXT" />
       <BoundingRoundBox x="18" y="126" width="90" height="106" outlinePadding="2" cornerRadius="10" />
       <Complication type="SHORT_TEXT">
@@ -5134,12 +5118,10 @@
               </Template>
             </Font>
           </TextCircular>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <PartImage x="64" y="158" width="33" height="33">
           <Image resource="sunrise_horizon" />
           <Launch target="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.EnvironmentActivity" />
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartImage>
       </Complication>
       <Complication type="EMPTY">
@@ -5148,16 +5130,15 @@
           <TextCircular centerX="222" centerY="114" width="388" height="388" startAngle="-80.5" endAngle="-54.5" direction="CLOCKWISE" align="CENTER" ellipsis="TRUE">
             <Font family="terminal_bold" size="21" color="#91F894">—</Font>
           </TextCircular>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <PartImage x="64" y="158" width="33" height="33">
           <Image resource="sunrise_horizon" />
           <Launch target="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.EnvironmentActivity" />
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartImage>
       </Complication>
     </ComplicationSlot>
     <ComplicationSlot slotId="6" displayName="sunset" supportedTypes="SHORT_TEXT EMPTY" x="0" y="0" width="480" height="480" scaleX="1.0" scaleY="1.0">
+      <Variant mode="AMBIENT" target="alpha" value="0" />
       <DefaultProviderPolicy defaultSystemProvider="EMPTY" defaultSystemProviderType="SHORT_TEXT" primaryProvider="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.SolarSource" primaryProviderType="SHORT_TEXT" />
       <BoundingRoundBox x="380" y="126" width="82" height="106" outlinePadding="2" cornerRadius="10" />
       <Complication type="SHORT_TEXT">
@@ -5169,12 +5150,10 @@
               </Template>
             </Font>
           </TextCircular>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <PartImage x="383" y="157" width="33" height="33">
           <Image resource="sunset_horizon" />
           <Launch target="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.EnvironmentActivity" />
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartImage>
       </Complication>
       <Complication type="EMPTY">
@@ -5183,12 +5162,10 @@
           <TextCircular centerX="-140" centerY="114" width="388" height="388" startAngle="54.5" endAngle="80.5" direction="CLOCKWISE" align="CENTER" ellipsis="TRUE">
             <Font family="terminal_bold" size="21" color="#91F894">—</Font>
           </TextCircular>
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartText>
         <PartImage x="383" y="157" width="33" height="33">
           <Image resource="sunset_horizon" />
           <Launch target="ua.and1gum.pipboy.compass/ua.and1gum.pipboy.compass.EnvironmentActivity" />
-          <Variant mode="AMBIENT" target="tintColor" value="#FFFFFF" />
         </PartImage>
       </Complication>
     </ComplicationSlot>
@@ -5201,31 +5178,17 @@
     </PartDraw>
     <Group name="hands_layer" x="0" y="0" width="480" height="480" scaleX="1.0" scaleY="1.0">
       <Variant mode="AMBIENT" target="alpha" value="0" />
-      <PartDraw x="0" y="0" width="480" height="480">
-        <Ellipse x="235.5" y="235.5" width="9" height="9">
-          <Fill color="#020704" />
-        </Ellipse>
-      </PartDraw>
-      <PartDraw x="0" y="0" width="480" height="480">
-        <Ellipse x="235.5" y="235.5" width="9" height="9">
-          <Stroke color="#FFC15C" thickness="2" />
-        </Ellipse>
-      </PartDraw>
       <Group name="hand_hour" x="0" y="0" width="480" height="480">
         <Transform target="angle" value="[HOUR_0_11_MINUTE]*30" />
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="240" startY="257" endX="240" endY="93">
-            <Stroke color="#D9FFC15C" thickness="6" cap="ROUND" />
-          </Line>
-        </PartDraw>
+        <PartImage x="227" y="91" width="26" height="168">
+          <Image resource="hand_hour_metal" />
+        </PartImage>
       </Group>
       <Group name="hand_minute" x="0" y="0" width="480" height="480">
         <Transform target="angle" value="[MINUTE_SECOND]*6" />
-        <PartDraw x="0" y="0" width="480" height="480">
-          <Line startX="240" startY="262" endX="240" endY="37">
-            <Stroke color="#D9FFC15C" thickness="4" cap="ROUND" />
-          </Line>
-        </PartDraw>
+        <PartImage x="229" y="35" width="22" height="229">
+          <Image resource="hand_minute_metal" />
+        </PartImage>
       </Group>
       <Group name="hand_second" x="0" y="0" width="480" height="480">
         <Transform target="angle" value="[SECOND]*6" />
@@ -5245,6 +5208,16 @@
           </Ellipse>
         </PartDraw>
       </Group>
+      <PartDraw x="0" y="0" width="480" height="480">
+        <Ellipse x="235.5" y="235.5" width="9" height="9">
+          <Fill color="#020704" />
+        </Ellipse>
+      </PartDraw>
+      <PartDraw x="0" y="0" width="480" height="480">
+        <Ellipse x="235.5" y="235.5" width="9" height="9">
+          <Stroke color="#E6AC58" thickness="1.3" />
+        </Ellipse>
+      </PartDraw>
     </Group>
   </Scene>
 </WatchFace>

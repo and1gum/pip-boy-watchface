@@ -26,7 +26,7 @@ The source has no prebuilt release APK or store listing. APKs made by `scripts/b
 
 ## How the face behaves
 
-The compass uses the watch's rotation sensor and may disappear when the display sleeps, locks, or the sensor reading becomes stale. Ambient mode keeps time, weather, pressure and solar times while hiding the active compass and other busy elements. Weather and calendar availability depend on the watch's system providers and their permissions. Sunrise and sunset use an approximate watch location; pressure uses the watch's pressure sensor. Missing data appears as missing data rather than a made-up reading.
+The compass uses the watch's rotation sensor and may disappear when the display sleeps, locks, or the sensor reading becomes stale. Ambient mode keeps only the date, digital time and weather. Pressure, sunrise and sunset remain on the active screen. Weather and calendar availability depend on the watch's system providers and their permissions. The system weather service controls refresh frequency; WFF has no watch-face setting for an hourly fetch interval. Sunrise and sunset use an approximate watch location; pressure uses the watch's pressure sensor. Missing data appears as missing data rather than a made-up reading.
 
 The heart icon changes color with the heart-rate range. These default thresholds and colors are set in the code:
 

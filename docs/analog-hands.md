@@ -1,5 +1,46 @@
 # Analog hands — 2026-10-11
 
+## Faceted gold styling — 2026-10-19
+
+Hour and minute hands now use sharp tapered silhouettes, two warm metallic
+faces, a narrow directional ridge highlight and a close 25% contact shadow.
+The shadow face blends 30% from `#E6AC58` toward `#6D4B27`; the metal body is
+opaque. The small 9px dark hub with a 1.3px gold rim sits above the hands.
+
+The supplied screenshot and subsequent Patek Philippe photo are the visual
+references. The photo clarifies the broad dauphine silhouette: two longitudinal
+facets, a needle tip and a pointed rear end. The adjustable SVG prototype is
+unavailable, so the stated 150% width cannot be recovered exactly. Maximum
+hour/minute widths are 16.5/13.375 logical pixels, halfway between the earlier
+thin 9/6.75px version and the broad 24/20px photo-based version;
+lengths remain 147/203px and rear tails 17/22px. Both retain the same 240,240
+pivot and time expressions. The seconds subtree, including its open
+counterweight, is unchanged.
+
+WFF PartDraw has no arbitrary polygon primitive. `metallic_hand()` in
+`scripts/generate.py` therefore bakes polygon geometry into two narrow transparent
+PNG assets at 2x logical resolution. Existing WFF groups rotate those images;
+there are no new expressions, animations, sensors or runtime filters. The two
+uncompressed RGBA images occupy approximately 147 KiB together.
+
+Verification: all 50 Python tests, watchface and companion lint/build checks
+passed. A normalized XML comparison confirmed everything outside `hands_layer`
+is unchanged and the seconds subtree is identical. Host AOD renders before/after
+are pixel-identical. The face APK installed successfully on SM-L715F via ADB;
+`artifacts/hands-medium-device.png` is an actual 498x498 watch capture of the
+intermediate-width version, with weather and complication values present.
+`artifacts/hands-dauphine-device-final.png` records the earlier wide version.
+Weather recovery by switching to the adjacent Samsung face and back is
+documented in `weather-recovery.md`.
+`artifacts/hands-medium-preview.png` is a synthetic preview at 10:09,
+not device evidence.
+The medium and previous wide APKs are preserved separately as
+`artifacts/PipBoy-hands-medium-debug.apk` and `artifacts/PipBoy-hands-wide-debug.apk`.
+`artifacts/hands-metal-device-ambient.png` confirms the hands disappear in
+natural AOD (device power state `Dozing`). Final code review found no issues.
+
+The earlier revisions below describe the previous appearance.
+
 Compared against prototype-fragment.html pw-hands and DESIGN.md.
 The original handoff has rear tails17/22/33px, hour/minute lengths147/203px,
 second length190px, an open counterweight at26px behind the pivot and a

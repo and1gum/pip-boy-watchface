@@ -33,7 +33,9 @@ The +3/+6 weather positions use their own hourly condition, temperature, and day
 
 If a weather value is unavailable, the face shows a dash and an unknown icon. An error marker appears when the provider reports an error, independently of availability. On the test watch, weather once remained unavailable after an interrupted provider request while Samsung Weather still had data. Switching to another face and back recreated the request and restored all three values. The original cancellation and automatic recovery behavior remain unverified; see [weather recovery](weather-recovery.md).
 
-AOD keeps digital time, date, three weather positions, pressure, sunrise, and sunset. It hides the active compass, calendar, heart rate, steps, battery sectors, and analog hands. The watch controls actual panel brightness. Weather and calendar still depend on their providers while the screen is dimmed.
+AOD keeps digital time, date, and three weather positions. It hides pressure, sunrise, sunset, the active compass, calendar, heart rate, steps, battery sectors, and analog hands. Pressure and solar times remain on the active screen. The watch controls actual panel brightness; hiding a slot does not itself set its provider's update interval.
+
+Weather is supplied through the system's WFF `WEATHER.*` data sources. Pip-Boy has no weather fetch timer, network client, or weather complication provider. WFF exposes `WEATHER.LAST_UPDATED` for freshness, but no documented watch-face setting for the fetch interval. Consequently, the face cannot enforce at most one weather update per hour; scheduling belongs to the watch's system weather service. This is separate from rendering the latest available value or advancing the +3/+6-hour labels. See the [official WFF weather documentation](https://developer.android.com/training/wearables/wff/weather).
 
 ## Heart rate, pressure, and solar times
 

@@ -83,20 +83,14 @@ class WatchFaceTest(unittest.TestCase):
         self.assertEqual(target.find('Launch').get('target'), 'com.samsung.android.watch.weather')
         self.assertGreater(list(scene).index(target), list(scene).index(scene.find("ComplicationSlot[@slotId='3']")))
 
-    def test_ambient_keeps_pressure_and_solar_but_hides_other_slots(self):
+    def test_ambient_keeps_weather_but_hides_all_complication_slots(self):
         active = self.face.find(".//Group[@name='active_only']")
         self.assertIsNotNone(active.find("./Variant[@mode='AMBIENT'][@value='0']"))
         slots = self.face.findall('./Scene/ComplicationSlot')
         self.assertEqual(len(slots), 6)
         for slot in slots:
             hidden=slot.find("./Variant[@mode='AMBIENT'][@value='0']")
-            if slot.get('slotId') in ('4','5','6'):
-                self.assertIsNone(hidden)
-                for part in slot.findall('.//PartText')+slot.findall('.//PartImage')+slot.findall('.//PartDraw'):
-                    target='alpha' if part.tag=='PartDraw' else 'tintColor'
-                    self.assertIsNotNone(part.find(f"./Variant[@mode='AMBIENT'][@target='{target}']"))
-            else:
-                self.assertIsNotNone(hidden)
+            self.assertIsNotNone(hidden, f"Slot {slot.get('slotId')} must be hidden in AOD")
         for group in self.face.findall(".//Group"):
             if group.get('name', '').startswith('weather_'):
                 self.assertIsNone(group.find("./Variant[@mode='AMBIENT'][@value='0']"))
