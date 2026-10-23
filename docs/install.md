@@ -1,6 +1,6 @@
 # Install Pip-Boy on a watch
 
-The primary variant is **0.3.0 release**, signed with the project's permanent release key. The face's previous debug variant was tested on Samsung Galaxy Watch Ultra2 (2026; SM-L715F), Wear OS 7. Release migration still requires on-watch verification. You need a computer, the watch and network access between them.
+The primary variant is **0.3.0 release**, signed with the project's permanent release key. The face's previous debug variant was tested on Samsung Galaxy Watch Ultra2 (2026; SM-L715F), Wear OS 7. The debug-to-release migration, existing configuration and active/natural AOD were verified on that watch with Android 17 (API 37). You need a computer, the watch and network access between them.
 
 [Українською](install.uk.md) · [Troubleshooting](troubleshooting.md)
 
