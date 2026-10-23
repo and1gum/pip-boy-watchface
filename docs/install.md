@@ -1,6 +1,6 @@
 # Install Pip-Boy on a watch
 
-This guide installs the current **0.2.0 debug build** from source. It was tested on Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) with Wear OS 7. Menus may differ on another watch. You need a computer, the watch, and a network path between them; the computer can use Ethernet.
+The primary variant is **0.3.0 release**, signed with the project's permanent release key. The face's previous debug variant was tested on Samsung Galaxy Watch Ultra2 (2026; SM-L715F), Wear OS 7. Release migration still requires on-watch verification. You need a computer, the watch and network access between them.
 
 [Українською](install.uk.md) · [Troubleshooting](troubleshooting.md)
 
@@ -14,18 +14,21 @@ To show your phone's battery on the face:
 
 Do this before selecting Pip-Boy so the battery source can bind automatically. This third-party app is not bundled with either Pip-Boy APK. If you do not need phone battery, skip this step; its field will remain empty.
 
-## 2. Build the two APKs
+## 2. Obtain the two APKs
 
-Install JDK 17 or newer, Android SDK platform 36 and build-tools 35.0.0, Python 3 with Pillow, and Node.js. Set `JAVA_HOME` and `ANDROID_HOME` to your installations, then run from the repository root:
+Download `PipBoy-Compass-0.3.0-release.apk`, `PipBoy-0.3.0-release.apk` and `SHA256SUMS` from [GitHub Releases](https://github.com/and1gum/pip-boy-watchface/releases). Put them in `artifacts/release/` in a checkout of the matching source tag, then verify:
 
 ```bash
-python3 -m pip install Pillow
-bash scripts/build.sh
+(cd artifacts/release && sha256sum -c SHA256SUMS)
 ```
 
-The script tests and builds both modules. It writes `artifacts/PipBoy-Compass-0.2.0-debug.apk` and `artifacts/PipBoy-0.2.0-debug.apk`. It also writes `SHA256SUMS` so you can check the files with `cd artifacts && sha256sum -c SHA256SUMS`.
+To build from source, install JDK 17+, Android SDK platform 36/build-tools 35.0.0, Python 3 with Pillow and Node.js. Set `JAVA_HOME` and `ANDROID_HOME`. Configure the [permanent signing key](release-signing.md) once, then:
 
-The `-debug` suffix identifies the build type: the current script builds the debug variant and signs it with your local debug key. It does not mean diagnostics recording is enabled; recording is off by default. A separate signed release workflow is not configured yet. [More about build types](development.md#debug-and-release-builds).
+```bash
+bash scripts/build-release.sh
+```
+
+For debugging, `bash scripts/build.sh` writes `artifacts/PipBoy-Compass-0.3.0-debug.apk` and `artifacts/PipBoy-0.3.0-debug.apk`, with `artifacts/SHA256SUMS`. Debug is signed with your local debug key and is not a downgrade path from release. Diagnostics recording is off by default in both variants.
 
 ## 3. Pair wireless ADB
 
@@ -46,14 +49,23 @@ adb devices
 
 ## 4. Install and select the face
 
-Install the companion first, then the face:
+Use the checked installer from the matching source checkout:
 
 ```bash
-adb -s WATCH_IP:CONNECT_PORT install -r artifacts/PipBoy-Compass-0.2.0-debug.apk
-adb -s WATCH_IP:CONNECT_PORT install -r artifacts/PipBoy-0.2.0-debug.apk
+bash scripts/install-release.sh --serial WATCH_IP:CONNECT_PORT
 ```
 
-Both commands must print `Success`. Choose **Pip-Boy** from the watch's face picker. If it does not appear immediately, reopen the picker.
+It verifies both packages, version codes and signing certificates (including the authenticated debug-to-release rotation) before installing either APK. It saves previous APKs, available debug preferences, a screenshot and system dumps under `~/.local/state/pip-boy/backups/`, then installs the companion and face with `install -r`. These files are an audit snapshot, not an automatic restore of Wear OS configuration. It never uninstalls or clears data. For Windows ADB in WSL add `--adb /absolute/path/to/adb.exe`; APK paths are converted automatically.
+
+For an existing Pip-Boy installation, leave the current face selected and check that its customized heart-rate boundaries, complication providers and permissions remain after updating. Do not remove the face first. If a signature check fails, stop and read [signing and migration](release-signing.md).
+
+For a fresh installation, select **Pip-Boy** in the watch-face picker after both APKs report `Success`. Reopen the picker if needed.
+
+To install the debug variant on a compatible debug installation or a clean device:
+
+```bash
+bash scripts/install-debug.sh --serial WATCH_IP:CONNECT_PORT
+```
 
 ## 5. Check data sources
 
@@ -81,6 +93,6 @@ Compass, pressure and location are read on the watch. The companion saves the la
 
 ## Updates and help
 
-To update, rebuild from the desired source revision and repeat the two `install -r` commands. Keep the same signing key to preserve app settings. The older APKs in [GitHub Releases](https://github.com/and1gum/pip-boy-watchface/releases) are rollback checkpoints and may behave differently from the current source.
+For subsequent updates use `bash scripts/install-release.sh --serial WATCH_IP:CONNECT_PORT` with the matching release source and APKs. Preserve the release key and signing lineage. Old debug checkpoint APKs cannot replace a release installation in place. Uninstalling, clearing data or resetting the watch loses settings; this migration workflow does none of those.
 
 For missing weather, compass, calendar or battery data, see [troubleshooting](troubleshooting.md). [Optional diagnostics](companion-diagnostics.md) can help capture a compass problem.

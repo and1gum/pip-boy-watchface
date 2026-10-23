@@ -4,26 +4,24 @@
 
 ## Build
 
-Use JDK 17+, Android SDK platform 36 and build-tools 35.0.0, Python 3 with Pillow, and Node.js for the rendering/tests. Set `JAVA_HOME` and `ANDROID_HOME` if the tools are outside the local default path in `scripts/build.sh`.
-
-```sh
-python3 -m pip install Pillow
-bash scripts/build.sh
-```
-
-The script generates the face, runs Python and companion Java tests, runs Android lint, and assembles both APKs:
-
-- `artifacts/PipBoy-0.2.0-debug.apk`
-- `artifacts/PipBoy-Compass-0.2.0-debug.apk`
-- `artifacts/SHA256SUMS`
+Use JDK 17+, Android SDK platform 36/build-tools 35.0.0, Python 3 with Pillow, and Node.js. Set `JAVA_HOME` and `ANDROID_HOME` if needed; `scripts/toolchain.sh` retains the previous local defaults. Version name and code are shared through `pipboyVersionName` and `pipboyVersionCode` in `gradle.properties`.
 
 ## Debug and release builds
 
-`scripts/build.sh` invokes `assembleDebug` for both modules and copies the resulting APKs with the `-debug` suffix. The Gradle modules use the default debug build type: debugging is enabled and signing uses the local debug keystore. There is no configured release signing workflow. See [Android build types](https://developer.android.com/build/build-variants#build-types).
+| Variant | Build | Install | Output |
+| --- | --- | --- | --- |
+| **Release (primary)** | `bash scripts/build-release.sh` | `bash scripts/install-release.sh --serial DEVICE` | `artifacts/release/PipBoy-0.3.0-release.apk`, `PipBoy-Compass-0.3.0-release.apk` |
+| Debug | `bash scripts/build.sh` | `bash scripts/install-debug.sh --serial DEVICE` | `artifacts/PipBoy-0.3.0-debug.apk`, `PipBoy-Compass-0.3.0-debug.apk` |
 
-This is separate from the companion's optional diagnostics recorder, which is off on process start. A debug build does not automatically start that recording. Renaming an APK does not change its build type, signing key or debugging settings.
+Both builds regenerate WFF, run the Python tests, companion unit tests and variant-specific lint. Each output directory has its own `SHA256SUMS`, covering only the current two APKs. Release additionally saves the companion's R8 `mapping.txt` under a versioned name and the public release certificate. Keep the mapping with the matching APK to retrace crashes.
 
-Preserve the signing key when distributing updates; a matching package/version name does not imply a matching signature. A release workflow needs signing configuration and its own validation, including any code optimization. Do not infer a battery improvement from a build-type change alone. Keep install instructions and artifact names in sync when changing versions.
+Release disables debugging and enables R8 optimization and resource shrinking for the companion. A narrowly scoped rule suppresses the optional SpotBugs `Nullable` annotation absent from commons-suncalc's runtime dependencies. WFF resources remain unshrunk because the system renderer loads them outside this APK's code graph. Provider/activity names referenced by WFF stay stable. Sensor cadence, publication policy and optional diagnostics are unchanged. Diagnostics recording starts off in both variants. APK size reduction does not establish a battery improvement.
+
+Configure the permanent release key once using [signing and migration](release-signing.md). The build never silently substitutes a debug key or generates a replacement key. The current release has authenticated debug-to-release key rotation. Ordinary unrelated local debug builds cannot update this installation; release-to-debug rollback is refused. Never uninstall as a signature workaround.
+
+After building release, run `bash scripts/test-signing.sh` with both original project 0.2.0 debug reference APKs present in `artifacts/`. It tests both package rotations on API 35 and 36, rejection of the reverse transition, and rejection of an unrelated signer using Android's actual APK verifier. The normal Python suite tests version guards and both-package preflight ordering. Physical configuration retention, providers and active/AOD must also be checked on the watch before calling migration device-verified.
+
+See installation instructions in [English](install.md) and [Ukrainian](install.uk.md).
 
 ## Source layout
 

@@ -6,12 +6,20 @@ android {
         applicationId = "ua.and1gum.pipboy.compass"
         minSdk = 35
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = providers.gradleProperty("pipboyVersionCode").get().toInt()
+        versionName = providers.gradleProperty("pipboyVersionName").get()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildTypes {
+        getByName("release") {
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
     }
     lint { abortOnError = true }
 }

@@ -2,7 +2,7 @@
 
 A Fallout-inspired Pip-Boy style watch face for Wear OS. Large digital time is the focus, with hour, minute and second hands layered over it. The face also shows weather, date, the next calendar event, heart rate, steps, watch and phone battery, compass, barometric pressure, sunrise and sunset.
 
-**Status:** experimental source project, version 0.2.0. Tested on a Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) running Wear OS 7 (Android 17), 498 × 498 display. It has not been packaged for the Play Store. Battery use has not been measured in a controlled comparison.
+**Status:** experimental source project, version 0.3.0. Earlier debug builds were tested on a Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) running Wear OS 7 (Android 17), 498 × 498 display. It has not been packaged for the Play Store. Release 0.3.0 runtime, signing migration and configuration retention still need on-watch validation. Battery use has not been measured in a controlled comparison.
 
 ![Active mode captured on the watch](docs/images/active-2026-10-23.png) ![Ambient mode captured on the watch](docs/images/ambient-2026-10-23.png)
 
@@ -20,9 +20,11 @@ The companion supplies compass, pressure, sunrise and sunset complications. Othe
 
 ## Install and set up
 
-Follow the [step-by-step installation guide](docs/install.md). Build both APKs with `bash scripts/build.sh`, pair ADB with the watch, install the companion first, then the face, and choose **Pip-Boy** in the watch-face picker. The calendar, phone battery, compass, pressure, sunrise and sunset sources are preset in the face; available providers do not need manual selection. Open **Pip-Boy Compass** once to enable its sensor service. For solar times, grant approximate and background location to the companion and open its environment screen to fetch the watch's location.
+Follow the [step-by-step installation guide](docs/install.md). Build both APKs with `bash scripts/build-release.sh`, pair ADB with the watch, install the companion first, then the face, and choose **Pip-Boy** in the watch-face picker. The calendar, phone battery, compass, pressure, sunrise and sunset sources are preset in the face; available providers do not need manual selection. Open **Pip-Boy Compass** once to enable its sensor service. For solar times, grant approximate and background location to the companion and open its environment screen to fetch the watch's location.
 
-Build from the current source for the behavior described here. [GitHub Releases](https://github.com/and1gum/pip-boy-watchface/releases) also contains an older rollback checkpoint; its APKs do not include all current changes. There is no Play Store listing. Local builds use your machine’s debug signing key; an APK signed with another key cannot update them in place.
+Use the two signed **0.3.0 release APKs** from [GitHub Releases](https://github.com/and1gum/pip-boy-watchface/releases). Release is the primary installation variant. The companion uses R8 code and resource optimization; battery savings have not been measured. Debug builds remain available through `bash scripts/build.sh`.
+
+The release uses a dedicated permanent key with a verified signing lineage from the project's original debug key. The [installation script](docs/install.md#4-install-and-select-the-face) checks both installed signatures before updating without uninstalling. The migration is designed to preserve the existing installation, including system-owned watch-face settings; this still needs verification on the watch. A debug build signed with another developer's key is incompatible. See [signing and migration](docs/release-signing.md).
 
 ## How the face behaves
 

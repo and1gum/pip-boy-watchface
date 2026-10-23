@@ -6,8 +6,10 @@ android {
         applicationId = "ua.and1gum.pipboy"
         minSdk = 35
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = providers.gradleProperty("pipboyVersionCode").get().toInt()
+        versionName = providers.gradleProperty("pipboyVersionName").get()
     }
+    // WFF resources are consumed by the system renderer, outside this APK's code graph.
+    buildTypes { getByName("release") { isDebuggable = false; isShrinkResources = false } }
     lint { abortOnError = true }
 }
