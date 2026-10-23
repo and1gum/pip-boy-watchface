@@ -17,7 +17,13 @@ The script generates the face, runs Python and companion Java tests, runs Androi
 - `artifacts/PipBoy-Compass-0.2.0-debug.apk`
 - `artifacts/SHA256SUMS`
 
-These are debug builds. Preserve the signing key when distributing updates; a matching package/version name does not imply a matching signature. Keep install instructions and artifact names in sync when changing versions.
+## Debug and release builds
+
+`scripts/build.sh` invokes `assembleDebug` for both modules and copies the resulting APKs with the `-debug` suffix. The Gradle modules use the default debug build type: debugging is enabled and signing uses the local debug keystore. There is no configured release signing workflow. See [Android build types](https://developer.android.com/build/build-variants#build-types).
+
+This is separate from the companion's optional diagnostics recorder, which is off on process start. A debug build does not automatically start that recording. Renaming an APK does not change its build type, signing key or debugging settings.
+
+Preserve the signing key when distributing updates; a matching package/version name does not imply a matching signature. A release workflow needs signing configuration and its own validation, including any code optimization. Do not infer a battery improvement from a build-type change alone. Keep install instructions and artifact names in sync when changing versions.
 
 ## Source layout
 

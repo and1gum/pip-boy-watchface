@@ -4,7 +4,17 @@ This guide installs the current **0.2.0 debug build** from source. It was tested
 
 [Українською](install.uk.md) · [Troubleshooting](troubleshooting.md)
 
-## 1. Build the two APKs
+## 1. Install the phone battery provider
+
+To show your phone's battery on the face:
+
+1. Install [Phone Battery Complication](https://play.google.com/store/apps/details?id=com.weartools.phonebattcomp&hl=en) from Google Play on your phone.
+2. Install the same app on your watch: select the watch in Google Play's device list, or find **Phone Battery Complication** in the watch's Play Store.
+3. Open the app once **on both phone and watch** and complete its initial setup. Keep the phone and watch connected to each other.
+
+Do this before selecting Pip-Boy so the battery source can bind automatically. This third-party app is not bundled with either Pip-Boy APK. If you do not need phone battery, skip this step; its field will remain empty.
+
+## 2. Build the two APKs
 
 Install JDK 17 or newer, Android SDK platform 36 and build-tools 35.0.0, Python 3 with Pillow, and Node.js. Set `JAVA_HOME` and `ANDROID_HOME` to your installations, then run from the repository root:
 
@@ -15,7 +25,9 @@ bash scripts/build.sh
 
 The script tests and builds both modules. It writes `artifacts/PipBoy-Compass-0.2.0-debug.apk` and `artifacts/PipBoy-0.2.0-debug.apk`. It also writes `SHA256SUMS` so you can check the files with `cd artifacts && sha256sum -c SHA256SUMS`.
 
-## 2. Pair wireless ADB
+The `-debug` suffix identifies the build type: the current script builds the debug variant and signs it with your local debug key. It does not mean diagnostics recording is enabled; recording is off by default. A separate signed release workflow is not configured yet. [More about build types](development.md#debug-and-release-builds).
+
+## 3. Pair wireless ADB
 
 On the watch, enable **Developer options** and **Wireless debugging**. Open **Pair device with pairing code** and note its IP address, **pairing port**, and code. On the computer:
 
@@ -32,7 +44,7 @@ adb devices
 
 `adb devices` should list the watch. Substitute the actual address and ports; do not type the placeholder words. If your computer uses Windows ADB from WSL, run `adb.exe` and pass APK paths converted with `wslpath -w`.
 
-## 3. Install and select the face
+## 4. Install and select the face
 
 Install the companion first, then the face:
 
@@ -43,7 +55,7 @@ adb -s WATCH_IP:CONNECT_PORT install -r artifacts/PipBoy-0.2.0-debug.apk
 
 Both commands must print `Success`. Choose **Pip-Boy** from the watch's face picker. If it does not appear immediately, reopen the picker.
 
-## 4. Check data sources
+## 5. Check data sources
 
 The data sources are preset; no separate configuration file is needed. When the companion and Phone Battery Complication are installed before selecting the face, Wear OS should bind them automatically. Open **Customize / Edit** only if a field is empty or was changed previously. The preset sources are:
 
@@ -55,7 +67,7 @@ The data sources are preset; no separate configuration file is needed. When the 
 | Pressure | Pip-Boy Barometer | RANGED_VALUE |
 | Sunrise and sunset | Pip-Boy Sunrise and Sunset | SHORT_TEXT |
 
-The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. The linked phone-battery provider is **not included**: install its phone and watch apps first. If you do not use it, leave that slot empty.
+The same solar provider supplies both sunrise and sunset slots. Weather, steps, heart rate and watch battery use the watch's own data; availability depends on its providers and permissions. If you skipped step 1, leave the phone battery slot empty.
 
 Open **Pip-Boy Compass** in the watch's app list once after assigning the compass. It then restarts automatically after a watch reboot or companion update, provided tracking is enabled and the compass slot remains assigned. Its **Stop compass / Enable compass** button controls tracking. The sensor pauses when the display sleeps, enters ambient mode, or locks, and may take up to ten seconds to resume after unlocking. Wrist-raise activation is supported. Its reading is magnetic heading, so it can differ from true north.
 
