@@ -1,5 +1,7 @@
 # Data sources and limitations
 
+[Українською](data-sources.uk.md) · [Installation](install.md) · [Troubleshooting](troubleshooting.md)
+
 Pip-Boy 0.2.0 was tested on a Samsung Galaxy Watch Ultra2 (2026; SM-L715F) with Wear OS 7. The face uses Watch Face Format (WFF) system data and Wear OS complications. The [installation guide](install.md) explains how to build both APKs, install the companion, and check the preset providers. Behavior on other watches has not been verified.
 
 | Display | Source | Current limitation |
@@ -17,29 +19,31 @@ Pip-Boy 0.2.0 was tested on a Samsung Galaxy Watch Ultra2 (2026; SM-L715F) with 
 
 ## Compass
 
-The companion converts the rotation-vector sensor reading to the heading of the top edge of the watch. It supplies a continuous RANGED_VALUE from 0 to 359 degrees; the face rotates the compass rim by the negative heading. Fixed hour markers do not rotate. North at 0° is a valid reading. Invalid readings and readings older than five seconds are withheld.
+The companion converts the rotation-vector sensor reading to the heading of the top edge of the watch. It supplies a continuous numeric heading across north; labels use 000–359 degrees. The face rotates the compass rim by the negative heading. Fixed hour markers do not rotate. North at 0° is a valid reading. Invalid readings and readings older than five seconds are withheld.
 
-The provider uses public ComplicationDataSourceUpdateRequester requests. It can request updates when the heading changes, experimentally up to 30 Hz, and confirms an unchanged heading every four seconds. The sensor sampling rate was not raised. Wear OS may throttle requests, so smoothness and long-term battery use still need evaluation. Tracking pauses when its provider is disabled or the display is asleep, locked, or in AOD. The watch does not expose an exact face-visibility signal; another foreground app can leave the sensor active. See [compass architecture](compass-push.md).
+Wear OS controls delivery to the face. Tracking pauses when disabled or while the display is asleep, locked or in AOD. Another app can leave the sensor active while the display remains on and unlocked. See [troubleshooting](troubleshooting.md#compass-is-blank-or-does-not-resume) for missing readings and the [developer guide](development.md#compass-lifecycle) for lifecycle details. Battery use has not been measured in a controlled comparison.
 
 ## Calendar
 
 The upper two arcs show the next event from the system NEXT_EVENT provider. The event time and title are wrapped at a fitting word boundary. The second row is truncated with a single ellipsis when necessary; the XML does not split UTF-16 pairs or emoji sequences. Tabs, explicit line breaks, and hyphenation are not handled separately. Other locales may return provider text in their own language.
 
-When no event is reported, the face displays NO UPCOMING EVENTS for the system responses observed during testing. When the source is unavailable, it displays CALENDAR UNAVAILABLE. The system provider, not the face, controls calendar access. See [calendar layout](calendar-layout.md).
+When no event is reported, the face displays NO UPCOMING EVENTS for the system responses observed during testing. When the source is unavailable, it displays CALENDAR UNAVAILABLE. The system provider, not the face, controls calendar access.
 
 ## Weather and AOD
 
 The +3/+6 weather positions use their own hourly condition, temperature, and day/night fields. Their labels are the watch's current whole hour plus three or six hours, not a confirmed timestamp from the provider. WFF does not document hourly precipitation probability for these fields, so future icons do not borrow the current probability. For current rain, thresholds of 20 and 70 percent select one, two, or three drops; these icons do not claim to measure rainfall intensity.
 
-If a weather value is unavailable, the face shows a dash and an unknown icon. An error marker appears when the provider reports an error, independently of availability. On the test watch, weather once remained unavailable after an interrupted provider request while Samsung Weather still had data. Switching to another face and back recreated the request and restored all three values. The original cancellation and automatic recovery behavior remain unverified; see [weather recovery](weather-recovery.md).
+If a weather value is unavailable, the face shows a dash and an unknown icon. An error marker appears when the provider reports an error, independently of availability. If the system weather request gets stuck after an update, [switching to another face and back](troubleshooting.md#weather-is-missing-or-shows-an-error) can restore it. This is a workaround, not a guarantee of automatic recovery.
 
-AOD keeps digital time, date, three weather positions, pressure, sunrise, and sunset. It hides the active compass, calendar, heart rate, steps, battery sectors, and analog hands. The watch controls actual panel brightness. Weather and calendar still depend on their providers while the screen is dimmed.
+AOD keeps digital time, date, and three weather positions. It hides pressure, sunrise, sunset, the active compass, calendar, heart rate, steps, battery sectors, and analog hands. Pressure and solar times remain on the active screen. The watch controls actual panel brightness; hiding a slot does not itself set its provider's update interval.
+
+Weather is supplied through the system's WFF `WEATHER.*` data sources. Pip-Boy has no weather fetch timer, network client, or weather complication provider. WFF exposes `WEATHER.LAST_UPDATED` for freshness, but no documented watch-face setting for the fetch interval. Consequently, the face cannot enforce at most one weather update per hour; scheduling belongs to the watch's system weather service. This is separate from rendering the latest available value or advancing the +3/+6-hour labels. See the [official WFF weather documentation](https://developer.android.com/training/wearables/wff/weather).
 
 ## Heart rate, pressure, and solar times
 
 The heart color uses five fixed colors and four default boundaries. The boundaries can be changed manually in the face editor; they are not imported from Samsung Health. The [README](../README.md#how-the-face-behaves) lists the default ranges. An unavailable heart-rate value appears as a dash.
 
-The pressure provider takes a short burst from the watch's pressure sensor and uses its median. It keeps a short local history in hPa. The displayed value is rounded to whole millimeters of mercury (mmHg), using 0.750061683 mmHg per hPa, with the compact label “mm”. For example, 994 hPa displays as 746 mm. The color compares the current reading with one from about three hours earlier: amber for at least +1 hPa, blue for at most −1 hPa, green between those thresholds, and muted when history is insufficient. There is no direction arrow. Rounding can leave the displayed number unchanged even when the trend color changes. The column's fill represents pressure on a 950–1050 hPa scale; its current vertical span is y=342–375.
+The pressure provider takes a short burst from the watch's pressure sensor and uses its median. It keeps a short local history in hPa. The displayed value is rounded to whole millimeters of mercury (mmHg), using 0.750061683 mmHg per hPa, with the compact label “mm”. For example, 994 hPa displays as 746 mm. The color compares the current reading with one from about three hours earlier: amber for at least +1 hPa, blue for at most −1 hPa, green between those thresholds, and muted when history is insufficient. There is no direction arrow. Rounding can leave the displayed number unchanged even when the trend color changes. The column's fill represents pressure on a 950–1050 hPa scale.
 
 Samsung Barometer's complication on the tested watch supports `SHORT_TEXT` and `LONG_TEXT`, but not the `RANGED_VALUE` needed for this numeric column. The companion supplies that value and calculates the trend; it still uses the watch's own pressure sensor.
 
