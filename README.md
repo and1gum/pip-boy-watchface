@@ -4,9 +4,9 @@ A Fallout-inspired Pip-Boy style watch face for Wear OS. Large digital time is t
 
 **Status:** experimental source project, version 0.2.0. Tested on a Samsung Galaxy Watch Ultra2 (2026; model SM-L715F) running Wear OS 7 (Android 17), 498 × 498 display. It has not been packaged for the Play Store. Battery use has not been measured in a controlled comparison.
 
-![Active mode captured on the watch](docs/images/active-on-watch.png) ![Ambient mode captured on the watch](docs/images/ambient-on-watch.png)
+![Active mode captured on the watch](docs/images/active-2026-10-23.png) ![Ambient mode captured on the watch](docs/images/ambient-2026-10-23.png)
 
-*Device screenshots: active mode on the left, ambient mode on the right. The active screenshot shows an earlier hand style.*
+*Unedited screenshots captured on the watch on 23 October 2026: current active mode on the left, natural always-on display on the right.*
 
 [Українською](README.uk.md) · [Install on a watch](docs/install.md) · [Data and limitations](docs/data-sources.md) · [Troubleshooting](docs/troubleshooting.md)
 
